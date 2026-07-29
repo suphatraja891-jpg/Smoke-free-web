@@ -9,7 +9,7 @@
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts: Prompt -->
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
@@ -58,7 +58,7 @@
             50% { transform: translateY(-8px); }
         }
 
-        /* ===== Painterly "portrait frame" around the result character ===== */
+        /* Painterly frame around result character */
         .painting-frame {
             position: relative;
             padding: 8px;
@@ -89,7 +89,6 @@
                 linear-gradient(160deg, #FFF7EE 0%, #F1E9FF 55%, #E4F3FF 100%);
             box-shadow: 0 0 0 1px rgba(140,110,230,0.08) inset;
         }
-        /* subtle canvas / brush-paper grain */
         .painting-canvas::after {
             content: "";
             position: absolute;
@@ -112,7 +111,7 @@
             50% { transform: scale(1.15) rotate(15deg); opacity: 1; }
         }
 
-        /* ===== Building / assembling transition screen ===== */
+        /* Loading / Building spinner */
         .brush-spinner {
             width: 84px;
             height: 84px;
@@ -148,7 +147,7 @@
             40% { transform: translateY(-6px); opacity: 1; }
         }
 
-        /* ===== Staggered reveal for result elements ===== */
+        /* Staggered reveal for results */
         .reveal-item {
             opacity: 0;
             transform: translateY(14px) scale(0.98);
@@ -158,19 +157,31 @@
             opacity: 1;
             transform: translateY(0) scale(1);
         }
-        #chibi-art-wrapper svg, #chibi-art-wrapper img {
-            filter: saturate(1.15) drop-shadow(0 4px 6px rgba(60, 40, 100, 0.12));
+
+        @keyframes box-shake {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            20% { transform: rotate(-6deg) scale(1.04); }
+            40% { transform: rotate(6deg) scale(1.04); }
+            60% { transform: rotate(-4deg) scale(1.06); }
+            80% { transform: rotate(4deg) scale(1.06); }
         }
-        #chibi-art-wrapper.reveal-pop {
-            animation: pop-in-bounce 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+        .animate-box-shake {
+            animation: box-shake 1.2s ease-in-out infinite;
         }
-        @keyframes pop-in-bounce {
-            0% { opacity: 0; transform: scale(0.4) rotate(-8deg); }
-            60% { opacity: 1; transform: scale(1.08) rotate(3deg); }
-            100% { opacity: 1; transform: scale(1) rotate(0deg); }
+        .animate-box-shake:hover {
+            animation-duration: 0.5s;
+            cursor: pointer;
+        }
+        @keyframes box-burst {
+            0% { transform: scale(1) rotate(0deg); opacity: 1; }
+            50% { transform: scale(1.35) rotate(12deg); opacity: 0.9; }
+            100% { transform: scale(2.2) rotate(-15deg); opacity: 0; }
+        }
+        .animate-box-burst {
+            animation: box-burst 0.55s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
 
-        /* Custom Scrollbar for Admin Modal */
+        /* Custom Scrollbar */
         .custom-scrollbar::-webkit-scrollbar {
             width: 6px;
         }
@@ -189,7 +200,7 @@
 </head>
 <body class="flex items-center justify-center min-h-screen pt-12 pb-12 px-3 sm:pt-16 sm:pb-16 sm:px-16 md:px-20">
 
-    <!-- Reusable flower-motif patterns (not rendered directly — referenced by the border strips below) -->
+    <!-- Reusable SVG floral patterns -->
     <svg width="0" height="0" style="position:absolute" aria-hidden="true">
         <defs>
             <pattern id="flowerPatternH" patternUnits="userSpaceOnUse" width="320" height="70">
@@ -211,7 +222,7 @@
         </defs>
     </svg>
 
-    <!-- Cute floral picture-frame border around the whole app -->
+    <!-- Floral Borders -->
     <svg class="fixed top-0 left-0 right-0 h-12 sm:h-16 w-full z-[1] pointer-events-none" preserveAspectRatio="none" aria-hidden="true"><rect width="100%" height="100%" fill="url(#flowerPatternH)"/></svg>
     <svg class="fixed bottom-0 left-0 right-0 h-12 sm:h-16 w-full z-[1] pointer-events-none" preserveAspectRatio="none" aria-hidden="true"><rect width="100%" height="100%" fill="url(#flowerPatternH)"/></svg>
     <svg class="hidden sm:block fixed top-0 bottom-0 left-0 sm:w-16 md:w-20 h-full z-[1] pointer-events-none" preserveAspectRatio="none" aria-hidden="true"><rect width="100%" height="100%" fill="url(#flowerPatternV)"/></svg>
@@ -223,8 +234,8 @@
         <span id="toast-message">ดำเนินการสำเร็จ</span>
     </div>
 
-    <!-- Main Card Container -->
-    <div id="main-container" class="w-full max-w-md glass-card p-5 md:p-8 relative overflow-hidden my-4 border border-white transition-all duration-300">
+    <!-- Main Container Card -->
+    <div id="main-container" class="w-full max-w-md glass-card p-5 md:p-8 relative overflow-hidden my-4 border border-white transition-all duration-300 z-10">
         
         <!-- Decoration Floating Blobs -->
         <div class="absolute -top-12 -right-12 w-36 h-36 bg-pink-200 rounded-full blur-2xl opacity-60 pointer-events-none"></div>
@@ -245,7 +256,6 @@
 
         <!-- SCREEN 1: START PAGE -->
         <div id="start-screen" class="text-center py-2">
-            <!-- Chibi Illustration Cover -->
             <div class="chibi-avatar-container w-36 h-36 mx-auto mb-4 relative">
                 <svg viewBox="0 0 200 200" class="w-full h-full drop-shadow-md">
                     <circle cx="100" cy="100" r="90" fill="#F0E6FF" />
@@ -279,19 +289,16 @@
 
         <!-- SCREEN 2: QUIZ SCREEN -->
         <div id="quiz-screen" class="hidden">
-            <!-- Progress Bar -->
             <div class="w-full bg-gray-100 h-2 rounded-full mb-6 overflow-hidden p-0.5 border border-gray-100">
-                <div id="progress-bar" class="bg-gradient-to-r from-purple-400 to-pink-500 h-full rounded-full transition-all duration-300" style="width: 25%"></div>
+                <div id="progress-bar" class="bg-gradient-to-r from-purple-400 to-pink-500 h-full rounded-full transition-all duration-300" style="width: 20%"></div>
             </div>
 
-            <!-- Question Title -->
             <h2 id="question-title" class="text-base font-bold text-gray-800 mb-4 leading-snug">
                 ข้อที่ 1: คำถาม...
             </h2>
 
-            <!-- Options Container -->
             <div id="options-container" class="space-y-2.5 mb-4">
-                <!-- Dynamic Options -->
+                <!-- Dynamic Options Injected via JS -->
             </div>
         </div>
 
@@ -300,7 +307,7 @@
             <div class="brush-spinner mx-auto mb-5">
                 <div class="brush-spinner-inner">🎨</div>
             </div>
-            <h2 class="text-base font-bold text-gray-800 mb-1">กำลังปั้นตัวละครของคุณ...</h2>
+            <h2 class="text-base font-bold text-gray-800 mb-1">รอก่อนเด้อกำลังสิบอก....</h2>
             <p id="building-subtext" class="text-xs text-gray-500 mb-4">กำลังผสมสี ระบายฝัน วาดตัวตนที่แท้จริง</p>
             <div class="flex items-center justify-center gap-1.5">
                 <div class="building-dot" style="animation-delay:0s"></div>
@@ -309,25 +316,74 @@
             </div>
         </div>
 
+        <!-- SCREEN 2.8: MYSTERY BLIND BOX SCREEN -->
+        <div id="box-screen" class="hidden text-center py-6">
+            <div class="inline-block bg-purple-100 text-purple-700 text-[11px] font-bold px-3 py-1 rounded-full mb-3 animate-pulse">
+                ✨ กล่องสุ่มตัวตนพร้อมเปิดแล้ว! ✨
+            </div>
+            <h2 class="text-lg font-extrabold text-gray-800 mb-1">
+                แตะที่กล่องเพื่อเปิดลุ้นผลลัพธ์!
+            </h2>
+            <p class="text-xs text-gray-500 mb-5">
+                มาดูกันว่าคาแรกเตอร์จิ๋วและภูมิคุ้มกันของคุณคือตัวไหน
+            </p>
+
+            <div id="blind-box-container" onclick="openBlindBox()" class="relative w-44 h-44 mx-auto mb-6 cursor-pointer group flex items-center justify-center">
+                <!-- Outer Glow Aura -->
+                <div class="absolute inset-0 bg-gradient-to-r from-purple-300 via-pink-300 to-amber-300 rounded-3xl blur-xl opacity-60 group-hover:opacity-90 transition duration-300"></div>
+                
+                <!-- Shaking Box Wrapper -->
+                <div id="mystery-box-art" class="animate-box-shake relative z-10 w-full h-full flex items-center justify-center">
+                    <svg viewBox="0 0 200 200" class="w-36 h-36 drop-shadow-xl filter group-hover:brightness-105 transition">
+                        <!-- Box Body -->
+                        <rect x="35" y="75" width="130" height="95" rx="18" fill="url(#boxGradient)"/>
+                        <rect x="35" y="75" width="130" height="95" rx="18" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-opacity="0.6"/>
+                        <!-- Ribbons -->
+                        <rect x="88" y="75" width="24" height="95" fill="#FFD166"/>
+                        <rect x="35" y="112" width="130" height="20" fill="#FFD166"/>
+                        <!-- Lid -->
+                        <rect x="28" y="55" width="144" height="30" rx="10" fill="#FF78B6"/>
+                        <rect x="88" y="55" width="24" height="30" fill="#FFD166"/>
+                        <!-- Ribbon Bow Top -->
+                        <path d="M 100 55 C 75 25, 50 50, 90 55 C 60 60, 85 25, 100 55 Z" fill="#FFD166"/>
+                        <path d="M 100 55 C 125 25, 150 50, 110 55 C 140 60, 115 25, 100 55 Z" fill="#FFD166"/>
+                        <circle cx="100" cy="55" r="8" fill="#FFF"/>
+                        <!-- Question Mark Badge -->
+                        <circle cx="100" cy="122" r="22" fill="#FFFFFF"/>
+                        <text x="100" y="132" font-family="Prompt, sans-serif" font-weight="900" font-size="28" fill="#8C7AE6" text-anchor="middle">?</text>
+                        <defs>
+                            <linearGradient id="boxGradient" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#8C7AE6" />
+                                <stop offset="100%" stop-color="#6C5CE7" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+            </div>
+
+            <button onclick="openBlindBox()" class="bg-gradient-to-r from-purple-500 via-pink-500 to-amber-400 text-white font-extrabold text-xs px-6 py-3 rounded-2xl shadow-lg hover:shadow-purple-200 transition transform active:scale-95 flex items-center justify-center gap-2 mx-auto">
+                <i class="fa-solid fa-wand-magic-sparkles text-amber-200 text-sm"></i> เปิดกล่องสุ่มตัวตน
+            </button>
+        </div>
+
         <!-- SCREEN 3: RESULT SCREEN -->
         <div id="result-screen" class="hidden text-center">
             <div id="result-eyebrow" class="reveal-item text-[11px] font-bold text-purple-600 uppercase tracking-widest mb-2">
                 ✨ ผลการวิเคราะห์ตัวละครของคุณ ✨
             </div>
 
-            <!-- Painterly portrait frame around the chibi art -->
+            <!-- Painterly portrait frame around character -->
             <div class="painting-frame w-44 h-44 mx-auto mb-3 relative">
                 <i class="fa-solid fa-star sparkle-deco text-sm" style="top:-4px; left:6px; animation-delay:0s;"></i>
                 <i class="fa-solid fa-sparkle sparkle-deco text-base" style="top:8px; right:-6px; animation-delay:0.4s;"></i>
                 <i class="fa-solid fa-star sparkle-deco text-xs" style="bottom:-2px; left:-2px; animation-delay:0.8s;"></i>
                 <div class="painting-canvas">
                     <div id="chibi-art-wrapper" class="chibi-avatar-container w-full h-full relative flex items-center justify-center overflow-hidden rounded-full">
-                        <!-- SVG or IMG injected via Javascript -->
+                        <!-- SVG / IMG injected via Javascript -->
                     </div>
                 </div>
             </div>
 
-            <!-- Character Titles -->
             <h2 id="monster-title" class="reveal-item text-xl font-extrabold text-gray-800 mb-0.5">
                 Character Title
             </h2>
@@ -343,7 +399,6 @@
                 Description...
             </p>
 
-            <!-- Impact Section -->
             <div id="impact-box" class="reveal-item bg-gray-50 p-2.5 rounded-2xl text-left border border-gray-100 mb-3">
                 <div class="text-[11px] font-bold text-gray-700 mb-0.5">
                     💸 มูลค่าที่คุณสูญเสียไปต่อปี:
@@ -353,7 +408,6 @@
                 </div>
             </div>
 
-            <!-- Swap Highlight -->
             <div id="swap-box" class="reveal-item bg-gradient-to-r from-amber-300 via-amber-400 to-yellow-400 text-gray-900 p-3 rounded-2xl font-bold text-xs mb-4 shadow-sm text-center">
                 <i class="fa-solid fa-gift text-amber-900 mr-1"></i> สิ่งที่คุณนำเงินไปแลกได้ทันที:<br>
                 <span id="swap-item" class="text-xs text-black underline decoration-wavy font-extrabold">
@@ -361,7 +415,6 @@
                 </span>
             </div>
 
-            <!-- Action Buttons -->
             <div id="result-actions" class="reveal-item space-y-2">
                 <button onclick="shareResult()" class="w-full bg-gradient-to-r from-emerald-400 to-teal-500 text-white font-bold py-3 px-4 rounded-xl shadow-md hover:opacity-95 transition flex items-center justify-center text-xs">
                     <i class="fa-brands fa-instagram text-base mr-2"></i> บันทึกรูปแชร์ลง IG Story (#แลกเพื่อสิ่งที่ใช่)
@@ -396,9 +449,7 @@
             <!-- TAB 1: QUESTIONS EDITOR -->
             <div id="admin-tab-questions" class="space-y-3">
                 <div class="p-2.5 bg-sky-50 border border-sky-100 rounded-2xl text-[10px] text-sky-800 leading-relaxed">
-                    <b>ระบบคะแนน:</b> แต่ละคำถามให้ 0-3 คะแนนต่อตัวเลือก ระบบรวมคะแนนทุกข้อแล้วตัดสินผลลัพธ์ดังนี้ —
-                    <b>13+</b> = The Positive Leader, <b>10-12</b> = The Independent, <b>7-9</b> = The Smart Thinker, <b>0-6</b> = The Brave One.
-                    ถ้าคุณเพิ่ม/ลบคำถาม คะแนนเต็มของควิซจะเปลี่ยนไป (จำนวนคำถาม × 3) อาจต้องกลับไปปรับช่วงคะแนนในโค้ดให้เหมาะสมอีกครั้ง
+                    <b>ระบบคะแนน:</b> แต่ละคำถามให้ 0-3 คะแนนต่อตัวเลือก ระบบรวมคะแนนทุกข้อแล้วตัดสินผลลัพธ์ตัวละครโดยเทียบกับช่วงคะแนนที่กำหนดไว้
                 </div>
                 <div class="flex justify-between items-center mb-2">
                     <span class="text-xs text-gray-500 font-medium">รายการคำถามทั้งหมด</span>
@@ -408,14 +459,14 @@
                 </div>
 
                 <div id="questions-list-container" class="space-y-2 max-h-80 overflow-y-auto pr-1 custom-scrollbar">
-                    <!-- Dynamic Question Items Injected via JS -->
+                    <!-- Dynamic Questions Injected via JS -->
                 </div>
             </div>
 
             <!-- TAB 2: CHARACTERS EDITOR -->
             <div id="admin-tab-characters" class="space-y-3 hidden">
                 <div class="flex justify-between items-center mb-2">
-                    <span class="text-xs text-gray-500 font-medium">ตัวละครทั้งหมด (<span id="c-count-badge">0</span>) — เพิ่มได้ไม่จำกัด</span>
+                    <span class="text-xs text-gray-500 font-medium">ตัวละครทั้งหมด (<span id="c-count-badge">0</span>)</span>
                     <button onclick="openCharacterModal(null)" class="bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold px-3 py-1.5 rounded-xl shadow transition flex items-center gap-1">
                         <i class="fa-solid fa-plus"></i> เพิ่มตัวละครใหม่
                     </button>
@@ -425,7 +476,7 @@
                 </div>
             </div>
 
-            <!-- Admin Settings & Tools Footer -->
+            <!-- Admin Backup / Restore Footer -->
             <div class="mt-5 pt-3 border-t border-gray-100 space-y-2">
                 <div class="flex items-center gap-2">
                     <button onclick="exportQuizData()" class="flex-1 text-xs bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-bold px-3 py-2 rounded-xl border border-emerald-200 flex items-center justify-center gap-1">
@@ -437,7 +488,7 @@
                     </label>
                 </div>
                 <p class="text-[10px] text-gray-400 leading-relaxed">
-                    ถ้ากดบันทึกแล้วรู้สึกว่าข้อมูลหาย (เช่น เปิดไฟล์ตรงๆ จากเครื่องแบบ file://) ให้กด "ส่งออกไฟล์สำรอง" หลังแก้ไขทุกครั้งเพื่อเก็บไฟล์ .json ไว้ในเครื่อง แล้วค่อย "นำเข้าไฟล์สำรอง" กลับมาตอนเปิดใช้งานครั้งถัดไป วิธีนี้ไม่พึ่งพา localStorage ของเบราว์เซอร์เลย จึงเชื่อถือได้แน่นอน
+                    คุณสามารถส่งออกไฟล์ JSON เพื่อสำรองข้อมูลหรือย้ายข้อมูลคำถามและตัวละครไปยังเครื่องอื่นได้สะดวก
                 </p>
                 <div class="flex items-center justify-between pt-1">
                     <button onclick="resetDataToDefault()" class="text-xs text-rose-500 hover:text-rose-700 font-semibold flex items-center gap-1">
@@ -452,7 +503,7 @@
 
     </div>
 
-    <!-- MODAL: EDIT/ADD QUESTION -->
+    <!-- MODAL 1: EDIT/ADD QUESTION -->
     <div id="question-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-lg rounded-3xl p-5 md:p-6 shadow-2xl max-h-[90vh] overflow-y-auto custom-scrollbar">
             <div class="flex justify-between items-center mb-4 border-b border-gray-100 pb-2">
@@ -462,15 +513,14 @@
                 </button>
             </div>
 
-            <form id="question-form" onsubmit="saveQuestionForm(event)" novalidate class="space-y-4 text-xs">
+            <form id="question-form" onsubmit="saveQuestionForm(event)" class="space-y-4 text-xs">
                 <div>
                     <label class="block font-bold text-gray-700 mb-1">หัวข้อคำถาม:</label>
                     <textarea id="q-input-title" rows="2" required class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-400 focus:outline-none" placeholder="ใส่โจทย์คำถาม..."></textarea>
                 </div>
 
                 <div class="space-y-3">
-                    <label class="block font-bold text-gray-700">ตัวเลือกตอบทั้ง 4 ข้อ (ให้คะแนนแต่ละข้อ 0-3):</label>
-                    <p class="text-[10px] text-gray-400 -mt-1">0 = คำตอบที่เสี่ยงที่สุด, 3 = คำตอบที่ดีต่อสุขภาพ/มั่นใจที่สุด ระบบจะรวมคะแนนทุกข้อเพื่อตัดสินผลลัพธ์ตัวละครตอนจบควิซ</p>
+                    <label class="block font-bold text-gray-700">ตัวเลือกตอบทั้ง 4 ข้อ (กำหนดคะแนน 0-3):</label>
                     
                     <div class="p-3 bg-purple-50/50 border border-purple-100 rounded-2xl space-y-2">
                         <div class="flex items-center justify-between">
@@ -479,7 +529,7 @@
                                 <option value="0">0 คะแนน</option>
                                 <option value="1">1 คะแนน</option>
                                 <option value="2">2 คะแนน</option>
-                                <option value="3">3 คะแนน</option>
+                                <option value="3" selected>3 คะแนน</option>
                             </select>
                         </div>
                         <input id="q-input-text-0" type="text" required class="w-full p-2 bg-white border border-gray-200 rounded-xl" placeholder="ข้อความตัวเลือก...">
@@ -491,7 +541,7 @@
                             <select id="q-input-points-1" class="bg-white border border-gray-200 rounded-lg text-xs p-1">
                                 <option value="0">0 คะแนน</option>
                                 <option value="1">1 คะแนน</option>
-                                <option value="2">2 คะแนน</option>
+                                <option value="2" selected>2 คะแนน</option>
                                 <option value="3">3 คะแนน</option>
                             </select>
                         </div>
@@ -503,7 +553,7 @@
                             <span class="font-bold text-indigo-700">ตัวเลือก C:</span>
                             <select id="q-input-points-2" class="bg-white border border-gray-200 rounded-lg text-xs p-1">
                                 <option value="0">0 คะแนน</option>
-                                <option value="1">1 คะแนน</option>
+                                <option value="1" selected>1 คะแนน</option>
                                 <option value="2">2 คะแนน</option>
                                 <option value="3">3 คะแนน</option>
                             </select>
@@ -515,7 +565,7 @@
                         <div class="flex items-center justify-between">
                             <span class="font-bold text-teal-700">ตัวเลือก D:</span>
                             <select id="q-input-points-3" class="bg-white border border-gray-200 rounded-lg text-xs p-1">
-                                <option value="0">0 คะแนน</option>
+                                <option value="0" selected>0 คะแนน</option>
                                 <option value="1">1 คะแนน</option>
                                 <option value="2">2 คะแนน</option>
                                 <option value="3">3 คะแนน</option>
@@ -526,544 +576,683 @@
                 </div>
 
                 <div class="flex justify-end gap-2 pt-2 border-t border-gray-100">
-                    <button type="button" onclick="closeQuestionModal()" class="px-4 py-2 rounded-xl bg-gray-100 text-gray-600 font-semibold hover:bg-gray-200">ยกเลิก</button>
-                    <button type="submit" class="px-5 py-2 rounded-xl bg-purple-600 text-white font-bold hover:bg-purple-700 shadow-md">บันทึกคำถาม</button>
+                    <button type="button" onclick="closeQuestionModal()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl transition">ยกเลิก</button>
+                    <button type="submit" class="px-5 py-2 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl transition shadow">บันทึกคำถาม</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- MODAL: EDIT CHARACTER -->
+    <!-- MODAL 2: EDIT/ADD CHARACTER -->
     <div id="character-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-lg rounded-3xl p-5 md:p-6 shadow-2xl max-h-[90vh] overflow-y-auto custom-scrollbar">
             <div class="flex justify-between items-center mb-4 border-b border-gray-100 pb-2">
-                <h3 id="modal-c-title" class="text-base font-bold text-gray-800">แก้ไขตัวละคร</h3>
+                <h3 id="modal-c-title" class="text-base font-bold text-gray-800">จัดการตัวละคร</h3>
                 <button onclick="closeCharacterModal()" class="text-gray-400 hover:text-gray-600">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
 
-            <form id="character-form" onsubmit="saveCharacterForm(event)" novalidate class="space-y-3 text-xs">
-                <input type="hidden" id="c-input-key">
-
+            <form id="character-form" onsubmit="saveCharacterForm(event)" class="space-y-3 text-xs">
                 <div>
                     <label class="block font-bold text-gray-700 mb-1">ชื่อตัวละคร (Title):</label>
-                    <input id="c-input-title" type="text" required class="w-full p-2 bg-gray-50 border border-gray-200 rounded-xl">
+                    <input id="c-input-title" type="text" required class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-400 focus:outline-none" placeholder="เช่น The Positive Leader">
                 </div>
 
                 <div>
-                    <label class="block font-bold text-gray-700 mb-1">คำบรรยายย่อย (Subtitle):</label>
-                    <input id="c-input-subtitle" type="text" required class="w-full p-2 bg-gray-50 border border-gray-200 rounded-xl">
+                    <label class="block font-bold text-gray-700 mb-1">คำอธิบายสั้น/สโลแกน (Subtitle):</label>
+                    <input id="c-input-subtitle" type="text" required class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-400 focus:outline-none" placeholder="เช่น ผู้นำสุดสตรอง มีภูมิคุ้มกันสูงสุด">
                 </div>
 
-                <div>
-                    <label class="block font-bold text-gray-700 mb-1">บทวิเคราะห์รายละเอียด (Description):</label>
-                    <textarea id="c-input-desc" rows="3" required class="w-full p-2 bg-gray-50 border border-gray-200 rounded-xl"></textarea>
-                </div>
-
-                <div>
-                    <label class="block font-bold text-gray-700 mb-1">มูลค่าความสูญเสียต่อปี (Impact) — ไม่บังคับ:</label>
-                    <input id="c-input-impact" type="text" class="w-full p-2 bg-gray-50 border border-gray-200 rounded-xl" placeholder="(ไม่บังคับ — เว้นว่างได้ถ้าไม่ต้องการแสดงกล่องนี้)">
-                </div>
-
-                <div>
-                    <label class="block font-bold text-gray-700 mb-1">สิ่งที่นำเงินไปแลกได้ (Swap) — ไม่บังคับ:</label>
-                    <input id="c-input-swap" type="text" class="w-full p-2 bg-gray-50 border border-gray-200 rounded-xl" placeholder="(ไม่บังคับ — เว้นว่างได้ถ้าไม่ต้องการแสดงกล่องนี้)">
-                </div>
-
-                <!-- Image Upload Section -->
-                <div class="p-3 bg-purple-50/60 border border-purple-100 rounded-2xl space-y-2">
-                    <label class="block font-bold text-purple-900">รูปภาพตัวละคร:</label>
-
-                    <div class="flex items-center gap-3">
-                        <div id="c-image-preview-wrap" class="w-16 h-16 rounded-xl bg-white border border-purple-200 flex items-center justify-center overflow-hidden shrink-0">
-                            <img id="c-image-preview" src="" class="w-full h-full object-cover hidden">
-                            <i id="c-image-preview-placeholder" class="fa-solid fa-image text-purple-200 text-xl"></i>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <label class="inline-flex items-center gap-1 bg-white border border-purple-200 hover:bg-purple-100 text-purple-700 font-semibold px-3 py-2 rounded-xl cursor-pointer text-xs w-full justify-center">
-                                <i class="fa-solid fa-upload"></i> อัปโหลดรูปภาพจากเครื่อง
-                                <input id="c-input-image-file" type="file" accept="image/*" class="hidden" onchange="handleCharacterImageUpload(event)">
-                            </label>
-                            <button type="button" id="c-image-remove-btn" onclick="removeCharacterImage()" class="hidden text-[10px] text-rose-500 hover:text-rose-700 font-semibold mt-1">
-                                <i class="fa-solid fa-trash-can"></i> ลบรูปนี้
-                            </button>
-                        </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-gray-700 mb-1">คะแนนขั้นต่ำ (Min Score):</label>
+                        <input id="c-input-min" type="number" min="0" required class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl">
                     </div>
-                    <p class="text-[10px] text-gray-400">เลือกรูปจากมือถือ/คอมพิวเตอร์ได้เลย ระบบจะย่อขนาดให้อัตโนมัติ (ถ้าไม่อัปโหลด จะใช้ภาพประกอบเวกเตอร์เริ่มต้นแทน)</p>
-                    <input type="hidden" id="c-input-image-data" value="">
+                    <div>
+                        <label class="block font-bold text-gray-700 mb-1">คะแนนสูงสุด (Max Score):</label>
+                        <input id="c-input-max" type="number" min="0" required class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-gray-700 mb-1">รายละเอียดตัวละคร (Description):</label>
+                    <textarea id="c-input-desc" rows="3" required class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-400 focus:outline-none" placeholder="อธิบายจุดแข็ง สไตล์ หรือข้อแนะนำของตัวละคร..."></textarea>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-gray-700 mb-1">รู้หรือไม่ (Impact Text):</label>
+                    <input id="c-input-impact" type="text" required class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl" placeholder="เช่น เซฟเงินได้ ~18,000 - 25,000 บาท/ปี">
+                </div>
+
+                <div>
+                    <label class="block font-bold text-gray-700 mb-1">ไอเทมแลกเปลี่ยนสุดฟิน (Swap Item):</label>
+                    <input id="c-input-swap" type="text" required class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl" placeholder="เช่น 🎟️ บัตรคอนเสิร์ตศิลปินโปรด + 👟 รองเท้าสเนีกเกอร์">
+                </div>
+
+                <div>
+                    <label class="block font-bold text-gray-700 mb-1">โค้ด SVG ของรูปตัวละคร (Chibi SVG):</label>
+                    <textarea id="c-input-svg" rows="3" required class="w-full p-2 bg-gray-50 border border-gray-200 rounded-xl font-mono text-[10px]" placeholder="<svg viewBox='0 0 200 200'>...</svg>"></textarea>
                 </div>
 
                 <div class="flex justify-end gap-2 pt-2 border-t border-gray-100">
-                    <button type="button" onclick="closeCharacterModal()" class="px-4 py-2 rounded-xl bg-gray-100 text-gray-600 font-semibold hover:bg-gray-200">ยกเลิก</button>
-                    <button type="submit" class="px-5 py-2 rounded-xl bg-purple-600 text-white font-bold hover:bg-purple-700 shadow-md">บันทึกตัวละคร</button>
+                    <button type="button" onclick="closeCharacterModal()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl transition">ยกเลิก</button>
+                    <button type="submit" class="px-5 py-2 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl transition shadow">บันทึกตัวละคร</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- SCRIPT LOGIC -->
+    <!-- Hidden Canvas for IG Story Export -->
+    <canvas id="export-canvas" width="1080" height="1920" class="hidden"></canvas>
+
     <script>
-        // Default Data Set
-        const defaultQuestions = [
+        const DEFAULT_QUESTIONS = [
             {
-                title: "อยู่ในวงหมูกระทะกับเพื่อนๆ แล้วเพื่อนสนิทส่งบุหรี่ไฟฟ้ากลิ่นฮิตมาให้ พร้อมพูดว่า "ลองดิ กลิ่นนี้หอมมาก ไม่ติดหรอก" คุณจะทำอย่างไร?",
+                title: "1.ถ้าเห็นเพื่อนสนิทในกลุ่มเริ่มหยิบบุหรี่/บุหรี่ไฟฟ้าขึ้นมาสูบ หรือพยายามชวนคุณสูบด้วย พฤติกรรมการรับมือในสไตล์ของคุณคือแบบไหน?",
                 options: [
-                    { text: "ปฏิเสธตรงๆ ทันทีอย่างมั่นใจ เช่น ไม่เอาอ่ะ ขอบใจนะ", points: 3 },
-                    { text: "พูดบ่ายเบี่ยงหลีกเลี่ยง เช่น เดี๋ยวค่อยสูบ เจ็บคออยู่ ", points: 2 },
-                    { text: "รับมาถือไว้ในมือ ไม่กล้าสูบแต่ก็ไม่กล้าคืน", points: 1 },
-                    { text: "รับมาลองทันที เพราะอยากมีส่วนร่วม", points: 0 }
+                    { text: "พูดตรงๆ อย่างจริงใจและมั่นใจ เช่น สูบบุหรี่มันไม่ดีนะ อยากให้แกเซฟตัวเองด้วย มีอะไรเครียดเล่าให้ฟังได้นะ", points: 3 },
+                    { text: "เตือนเพื่อนด้วยความเป็นห่วงแบบเนียนๆ หรือชวนเปลี่ยนเรื่อง เช่น แก... เก็บไว้ก่อนปะ กลิ่นมันติดเสื้อ ไปหาของกินอร่อยๆ กันดีกว่า", points: 2 },
+                    { text: "ยิ้มๆ แล้วปล่อยผ่าน ไม่กล้าพูดเตือนอะไร เพราะไม่อยากให้บรรยากาศเสียหรือขัดใจเพื่อน", points: 1 },
+                    { text: "เออออตามเพื่อนไปก่อน ถ้าเพื่อนให้ลองก็คงลองนิดหน่อย จะได้ดูสนิทกัน", points: 0 }
                 ]
             },
             {
-                title: "เวลารู้สึกเครียดมากๆ คุณมีวิธีจัดการความรู้สึกนี้อย่างไร?",
+                title: "2. สัปดาห์นี้งานแน่น อ่านหนังสือไม่ทัน โดนกดดันหนักจนหัวหมุนและรู้สึกเครียดมากๆ คุณมีวิธีจัดการความรู้สึกนี้อย่างไร?",
                 options: [
+                    { text: "ชวนเพื่อนออกไปเที่ยวหรือหาของกินอร่อยๆ เพื่อให้ลืมเรื่องเครียดไปก่อนน", points: 2 },
                     { text: "ไปออกกำลังกาย ฟังเพลง นอนพัก หรือหาระบายกับคนที่ไว้ใจได้", points: 3 },
-                    { text: "นึกถึงบุหรี่/บุหรี่ไฟฟ้าทันที เพราะคิดว่าสูบแล้วจะช่วยให้หายเครียดได้ไวที่สุด", points: 0 },
-                    { text: "ชวนเพื่อนออกไปเที่ยวหรือหาของกินอร่อยๆ เพื่อให้ลืมเรื่องเครียดไปก่อน", points: 2 },
-                    { text: "นั่งเก็บความเครียดไว้คนเดียว จนเริ่มมีความคิดอยากหาตัวช่วยมาผ่อนคลายสมอง", points: 1 }
+                    { text: "นั่งเก็บความเครียดไว้คนเดียว", points: 1 },
+                    { text: "นึกถึงบุหรี่/บุหรี่ไฟฟ้าทันที เพราะคิดว่าสูบแล้วจะช่วยให้หายเครียดได้ไวที่สุด", points: 0 }
                 ]
             },
             {
-                title: "อะไรคือเหตุผลสำคัญที่สุดที่ทำให้คุณ "คิดหนักที่สุด" เวลาที่มีคนชวน หรือมีความคิดแวบเข้ามาว่าอยากลองสูบบุหรี่?",
+                title: "3.อะไรคือเหตุผลสำคัญที่สุดที่ทำให้คุณ คิดหนักที่สุด เวลาที่มีคนชวน หรือมีความคิดแวบเข้ามาว่าอยากลองสูบบุหรี่?",
                 options: [
-                    { text: "เสียดายเงิน และกลัวว่าถ้าติดขึ้นมาจะกลายเป็นภาระค่าใช้จ่าย", points: 2 },
                     { text: "ไม่ได้คิดอะไรเยอะ คิดแค่ว่าอยากลองเพื่อความสนุกแค่นั่ง ณ ตอนนั้น", points: 0 },
                     { text: "กลัวพ่อแม่ ครู หรือคนสำคัญในชีวิตรู้เข้าแล้วจะผิดหวัง", points: 1 },
+                    { text: "เสียดายเงิน และกลัวว่าถ้าติดขึ้นมาจะกลายเป็นภาระค่าใช้จ่าย", points: 2 },
                     { text: "ห่วงเรื่องสุขภาพระยะยาว สารเคมีสะสม และเป้าหมายชีวิตในอนาคต", points: 3 }
                 ]
             },
             {
-                title: "มีคนบอกคุณว่า "บุหรี่ไฟฟ้าปลอดภัยกว่าบุหรี่มวนตั้งเยอะ มีแต่ไอน้ำ ไม่มีอันตรายหรอก" คุณมีความคิดต่อประโยคนี้อย่างไร?",
+                title: "4. หากมีคนบอกว่า 'บุหรี่ไฟฟ้าไม่มีอันตราย เป็นแค่ละอองน้ำไอน้ำหอมๆ' คุณคิดอย่างไรกับประโยตนี้?",
                 options: [
-                    { text: "เชื่อเลย! คิดว่าปลอดภัย สามารถสูบได้เรื่อยๆ โดยไม่ต้องกังวลเรื่องสุขภาพ", points: 0 },
-                    { text: "ค่อนข้างเชื่อ เพราะเห็นคนสูบกันเยอะและกลิ่นหอม ไม่น่าจะมีอันตรายร้ายแรง", points: 1 },
-                    { text: "ไม่เชื่อ! เพราะรู้ดีว่าไอน้ำนั้นเต็มไปด้วยนิโคติน สารเคมี และโลหะหนักอันตราย", points: 3 },
-                    { text: "ค่อนข้างลังเล รู้ว่าไม่อันตรายเท่าบุหรี่มวน แต่ก็คิดว่าน่าจะมีโทษอยู่ดี", points: 2 }
+                    { text: "ไม่จริง! นิโคตินและสารเคมีในน้ำยาทำลายสมองและปอดระยะยาว", points: 3 },
+                    { text: "ไม่เชื่อ 100% เพราะสารเคมีที่เข้าปอดย่อมมีผลเสียแน่นอน", points: 2 },
+                    { text: "สับสนนิดหน่อย เพราะเห็นหลายคนรอบตัวบอกไม่อันตราย", points: 1 },
+                    { text: "เชื่อว่าปลอดภัยกว่าบุหรี่มวนจริง น่าจะไม่ส่งผลเสียเท่าไหร่", points: 0 }
                 ]
             },
             {
-                title: "ในมุมมองของคุณ การที่เราเลือก "ไม่เริ่มสูบบุหรี่/บุหรี่ไฟฟ้า" ส่งผลดีที่คุ้มค่าที่สุดกับชีวิตเราในเรื่องไหน?",
+                title: "5.ในมุมมองของคุณ การที่เราเลือก \ไม่เริ่มสูบบุหรี่/บุหรี่ไฟฟ้า ส่งผลดีที่คุ้มค่าที่สุดกับชีวิตเราในเรื่องไหน?",
                 options: [
                     { text: "หน้าตาดูสดใส ปากไม่ดำ กลิ่นตัวหอมสะอาด ช่วยเสริมบุคลิกภาพให้ดูดีขึ้น", points: 1 },
-                    { text: "อิสระทางร่างกายและจิตใจ! สมองโปร่ง โฟกัสเป้าหมายชีวิตได้เต็มที่ โดยไม่ต้องตกเป็นทาสนิโคติน", points: 3 },
+                    { text: "อิสระทางร่างกายและจิตใจ! สมองโปร่ง โฟกัสเป้าหมายชีวิตได้เต็มที่", points: 3 },
                     { text: "เอาจริงๆ ไม่แน่ใจ เพราะคิดว่าสูบหรือไม่สูบ ผลลัพธ์ในชีวิตก็คงไม่ต่างกันเท่าไหร่", points: 0 },
                     { text: "ประหยัดเงินในกระเป๋าได้เยอะมาก เอาเงินไปใช้เปย์ตัวเอง เที่ยว หรือซื้อของที่อยากได้ดีกว่า", points: 2 }
                 ]
+            }
+        ];
+
+        const DEFAULT_CHARACTERS = [
+            {
+                id: "conscientiousness",
+                minScore: 13,
+                maxScore: 15,
+                title: "พี่สติเป๊ะ (Conscientiousness)",
+                subtitle: "การมีวินัยและเป้าหมาย • ไม่เสี่ยง",
+                desc: "มีความรับผิดชอบสูง มุ่งมั่น ควบคุมแรงกระตุ้นของตัวเองได้ดีเยี่ยม ยึดมั่นในเป้าหมายระยะยาว เวลาคิดจะทำอะไรจะประเมินความเสี่ยงและผลกระทบอย่างเป็นระบบ\n\n💡 สุดยอดเสาหลักทางความคิด: คุณคือคนที่ใช้เหตุผลนำทางชีวิตได้อย่างน่าชื่นชม การมองเห็นความจริงว่า 'สุขภาพดีสร้างยาก แต่มันง่ายมากที่จะเสียไป' คือเกราะป้องกันที่ดีที่สุด\n\n💪 จุดแข็ง: มีวินัยในตนเองสูง ไม่หวั่นไหวต่อกระแสนิยม เป็นผู้นำทางความคิดที่เพื่อนๆ สามารถยึดเป็นแบบอย่างที่ดีในการดูแลสุขภาพและการวางแผนชีวิตได้เลย",
+                impactText: "เงินที่ได้จากการเลิกสูบบุหรี่ 1 ปี เซฟเงินได้เต็มๆ ~18,000 - 25,000 บาทต่อปี!",
+                swapItem: "🎟️ บัตรคอนเสิร์ตศิลปินโปรด + 👟 รองเท้าสเนีกเกอร์รุ่นลิมิเต็ด + ✈️ ทริปเที่ยว!",
+                chibiSvg: `<img src="https://i.ibb.co/Hfn010KS/Gemini-Generated-Image-b0cuseb0cuseb0cu-removebg-preview.png" alt="พี่สติเป๊ะ" class="w-full h-auto max-h-full object-contain transition-transform duration-300 hover:scale-105" />`,
+
             },
             {
-                title: "ถ้าเห็นเพื่อนสนิทในกลุ่มเริ่มหยิบบุหรี่/บุหรี่ไฟฟ้าขึ้นมาสูบ หรือพยายามชวนคุณสูบด้วย พฤติกรรมการรับมือในสไตล์ของคุณคือแบบไหน?",
-                options: [
-                    { text: "เตือนเพื่อนด้วยความเป็นห่วงแบบเนียนๆ หรือชวนเปลี่ยนเรื่อง เช่น "แก... เก็บไว้ก่อนปะ กลิ่นมันติดเสื้อ", points: 2 },
-                    { text: "ยิ้มๆ แล้วปล่อยผ่าน ไม่กล้าพูดเตือนอะไร เพราะไม่อยากให้บรรยากาศเสียหรือขัดใจเพื่อน", points: 1 },
-                    { text: "พูดตรงๆ อย่างจริงใจและมั่นใจ เช่น "สูบบุหรี่มันไม่ดีนะแก และอยากให้แกเซฟตัวเองด้วยเหมือนกัน มีอะไรเครียดเล่าให้ฟังได้นะ"", points: 3 },
-                    { text: "เออออตามเพื่อนไปก่อน ถ้าเพื่อนให้ลองก็คงลองนิดหน่อย จะได้ดูสนิทกันและไม่ตกขอบ", points: 0 }
-                ]
+                id: "extraversion",
+                minScore: 10,
+                maxScore: 12,
+                title: "พี่ตัวจี๊ด (Extraversion)",
+                subtitle: "การเปิดเผยและเข้าสังคม • เสี่ยง (ปานกลาง)",
+                desc: "ชอบการปฏิสัมพันธ์ ชื่นชอบความตื่นเต้น และต้องการการยอมรับจากกลุ่มเพื่อน จุดที่ทำให้เสี่ยงไม่ใช่เพราะอยากสูบ แต่เพราะบรรยากาศในวงสังคมและการอยากดู 'คูล' หรือเป็นจุดสนใจ\n\n💬 ข้อคิด: ความเท่และเสน่ห์ที่แท้จริงมาจากพลังงานบวกและความเป็นตัวของตัวเอง ไม่ใช่ควันบุหรี่\n\n🎯 แนวทางแก้ไข: ใช้ความกล้าแสดงออกเป็นผู้นำเทรนด์สุขภาพ เช่น เป็นคนชวนเพื่อนไปทำกิจกรรมสนุกๆ แทนการนั่งจับกลุ่มสูบ กิจกรรมปล่อยพลัง เช่น เล่นกีฬาประเภททีม กิจกรรมเอ็กซ์ตรีม Dance Session หรือจัดปาร์ตี้บอร์ดเกม",
+                impactText: "รู้หรือไม่? หยุดสูบปุ๊บ ผิวออร่าปั๊บ!ภายใน 1-3 เดือน: ร่างกายจะเพิ่มการลำเลียงออกซิเจน ทำให้ผิวพรรณกลับมาสดใส",
+                swapItem: "🎧 หูฟัง Bluetooth ตัวท็อป + 🎮 เกมคอนโซลหรือแผ่นเกมใหม่ล่าสุด!",
+                chibiSvg: `<img src="https://i.ibb.co/qYsMx9mf/Gemini-Generated-Image-d6740jd6740jd674.png" alt="พี่ตัวจี๊ด" class="w-full h-full object-contain transition-transform duration-300 hover:scale-105" />`,
+            },
+            {
+                id: "openness",
+                minScore: 7,
+                maxScore: 9,
+                title: "พี่สายลอง (Openness)",
+                subtitle: "การเปิดรับสิ่งใหม่ • เสี่ยง (ปานกลาง-สูง)",
+                desc: "ช่างสังเกต มีจินตนาการสูง ชอบทดลองสิ่งที่ไม่เคยเจอ จุดอ่อนสำคัญคือแพ้ทาง 'ความแปลกใหม่' นวัตกรรม ดีไซน์ที่สวยงาม หรือกลิ่นหอมหลากหลายของบุหรี่ไฟฟ้า\n\n💭 ข้อคิด: ความช่างสงสัยเป็นพลังสร้างสรรค์ที่วิเศษมาก เพียงแค่ต้องเลือก 'เปิดรับ' สิ่งที่ให้คุณค่ากับชีวิตมากกว่าสิ่งที่เป็นพิษ\n\n🎨 แนวทางแก้ไข: เบี่ยงเบนความสนใจด้วยสิ่งอื่น ลองเข้าวงการ Specialty Coffee, ชาเบลนด์พิเศษ หรือฝึกทำ Mocktail แปลกใหม่ หรือหากิจกรรมเติมไฟสร้างสรรค์ เช่น งาน DIY, กราฟิกดีไซน์, การถ่ายภาพ หรือออกเดินทางท่องเที่ยวธรรมชาติ",
+                impactText: "💡 รู้หรือไม่?: หยุดสูบแค่ 2 สัปดาห์ ความจุปอดจะฟื้นตัว",
+                swapItem: "🥤 ชาไข่มุก 150 แก้ว + 👗 เสื้อผ้าแฟชั่นชุดใหม่ยกตู้!",
+                chibiSvg: `<img src="https://i.ibb.co/qYkvjcbN/Gemini-Generated-Image-ftm448ftm448ftm4.png" alt="พี่สายลอง" class="w-full h-full object-contain transition-transform duration-300 hover:scale-105" />`,
+
+            },
+            {
+                id: "agreeableness",
+                minScore: 4,
+                maxScore: 6,
+                title: "พี่เกรงใจ (Agreeableness)",
+                subtitle: "การเป็นมิตรและความคล้อยตาม • เสี่ยง (ระดับสูง)",
+                desc: "แคร์ความรู้สึกผู้อื่น ขี้สงสาร ไม่อยากมีข้อขัดแย้ง รู้ดีว่าบุหรี่ไม่ดีต่อสุขภาพ แต่ปฏิเสธคนไม่เป็นเพราะกลัวเพื่อนเสียหน้า กลัวถูกตัดออกจากกลุ่ม หรือกลัวเข้ากับคนอื่นไม่ได้\n\n🤝 ข้อคิด: การปฏิเสธพฤติกรรม ไม่ได้แปลว่าเราปฏิเสธเพื่อน เพื่อนที่รักเราจริงจะเคารพการตัดสินใจและสุขภาพของเราเสมอ\n\n🛡️ แนวทางแก้ไข: เทคนิคปฏิเสธแบบนุ่มนวล เช่น 'ช่วงนี้คอไม่ค่อยดี ขอผ่านนะ' หรือ 'เดี๋ยวเรานั่งคุยเป็นเพื่อน แต่ขอไม่สูบนะ' และเน้นชวนเพื่อนทำกิจกรรมที่ไม่เปิดช่องให้สูบบุหรี่ เช่น เข้าโรงหนัง หรือเล่นไอซ์สเก็ต",
+                impactText: "สูญเสียเงินละลายแม่น้ำสูงถึง ~15,000 - 25,000+ บาทต่อปี!",
+                swapItem: "📱 สมาร์ทโฟนรุ่นใหม่ล่าสุด หรือ 🛵 ทริปเที่ยวต่างประเทศ 1 ทริป!",
+                chibiSvg: '<img src="https://i.ibb.co/WpBPyXvk/Gemini-Generated-Image-7t52f7t52f7t52f7-removebg-preview.png" alt="พี่เกรงใจ" class="w-full h-auto max-h-full object-contain transition-transform duration-300 hover:scale-105" />',
+
+            },
+            {
+                id: "neuroticism",
+                minScore: 0,
+                maxScore: 3,
+                title: "พี่ดิ่งง่าย (Neuroticism)",
+                subtitle: "การรับรู้ความเครียดและอารมณ์ • เสี่ยงสูงสุด",
+                desc: "อ่อนไหว ไวต่อความรู้สึก เครียดและวิตกกังวลได้ง่าย เมื่อเจอความกดดันหรืออารมณ์ลบ มักมองหา 'ทางออกด่วน' เพื่อสยบอารมณ์ บุหรี่จึงมักถูกใช้เป็นที่พึ่งทางใจชั่วคราว\n\n❤️ ข้อคิด: การรู้สึกดิ่งหรือเครียดเป็นเรื่องธรรมดาของมนุษย์ และคุณไม่ต้องแบกมันไว้คนเดียว มีวิธีฮีลใจที่ปลอดภัยและไม่ทำร้ายร่างกายรอคุณอยู่\n\n🧘 แนวทางแก้ไข: สร้างระบบระบายอารมณ์ใหม่ เช่น หายใจ 4-7-8, ลูบหน้าด้วยน้ำเย็น หรือกลิ่นบำบัด กิจกรรมฮีลใจ เช่น เล่นกับสัตว์เลี้ยง, Journaling, ทำสมาธิแบบ Mindfulness หรือหากเครียดสะสมควรปรึกษาผู้เชี่ยวชาญ",
+                impactText: "สูญเสียเงินละลายแม่น้ำสูงถึง ~20,000 - 40,000+ บาทต่อปี!",
+                swapItem: "💻 แท็บเล็ตรุ่นโปร หรือ 🏥 คอร์สดูแลสุขภาพจิตและกายแบบพรีเมียม!",
+                chibiSvg: `<img src="https://i.ibb.co/4gJNvm98/Gemini-Generated-Image-j7bw02j7bw02j7bw.png" alt="พี่ดิ่งง่าย" class="w-full h-full object-contain transition-transform duration-300 hover:scale-105" />`,
+
+
             }
         ];
 
-        const defaultCharacters = {
-            hero: {
-                title: "💚 สายสติล็อค (The Mindset Lock)",
-                subtitle: "“คุณไม่หวั่นกับแรงกดดัน”",
-                desc: "คุณกล้าปฏิเสธสิ่งที่ไม่ใช่ และเชื่อมั่นในการตัดสินใจของตัวเอง คนแบบคุณมีโอกาสน้อยที่จะเริ่มสูบบุหรี่เพราะคำชวนของคนอื่น",
-                impact: "",
-                swap: "",
-                image: "",
-                svg: `<svg viewBox="0 0 200 200" class="w-full h-full"><circle cx="100" cy="100" r="88" fill="#E8F5E9"/><circle cx="100" cy="100" r="76" fill="#C8E6C9" opacity="0.6"/><path d="M 35 45 L 40 55 L 50 60 L 40 65 L 35 75 L 30 65 L 20 60 L 30 55 Z" fill="#FFD54F"/><path d="M 165 40 L 168 47 L 175 50 L 168 53 L 165 60 L 162 53 L 155 50 L 162 47 Z" fill="#81C784"/><path d="M 35 100 C 15 80, 20 120, 50 120 Z" fill="#FFF" stroke="#A5D6A7" stroke-width="2"/><path d="M 165 100 C 185 80, 180 120, 150 120 Z" fill="#FFF" stroke="#A5D6A7" stroke-width="2"/><path d="M 58 135 C 58 115, 142 115, 142 135 L 152 190 L 48 190 Z" fill="#66BB6A"/><path d="M 85 135 L 100 155 L 115 135 Z" fill="#FFF"/><path d="M 128 130 L 152 130 L 156 152 Q 140 170 124 152 Z" fill="#FFCA28" stroke="#FFA000" stroke-width="2"/><path d="M 135 142 L 140 148 L 148 138" stroke="#2E7D32" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="100" cy="92" r="46" fill="#FFE0B2"/><circle cx="78" cy="92" r="16" fill="#1B5E20"/><circle cx="122" cy="92" r="16" fill="#1B5E20"/><circle cx="82" cy="87" r="6.5" fill="#FFF"/><circle cx="126" cy="87" r="6.5" fill="#FFF"/><circle cx="74" cy="96" r="2.5" fill="#FFF"/><circle cx="118" cy="96" r="2.5" fill="#FFF"/><ellipse cx="70" cy="103" rx="6" ry="3" fill="#FF7043" opacity="0.5"/><ellipse cx="130" cy="103" rx="6" ry="3" fill="#FF7043" opacity="0.5"/><path d="M 48 85 C 45 40, 155 40, 152 85 C 132 65, 115 62, 100 72 C 85 62, 68 65, 48 85 Z" fill="#4E342E"/><path d="M 100 32 L 106 44 L 118 44 L 108 52 L 112 64 L 100 56 L 88 64 L 92 52 L 82 44 L 94 44 Z" fill="#FFD54F"/><path d="M 90 108 Q 100 120 110 108 Z" fill="#2E7D32"/><g transform="translate(133,58) scale(0.5)"><g fill="#FF80AB"><ellipse cx="0" cy="-9" rx="5.5" ry="8.5"/><ellipse cx="0" cy="-9" rx="5.5" ry="8.5" transform="rotate(72)"/><ellipse cx="0" cy="-9" rx="5.5" ry="8.5" transform="rotate(144)"/><ellipse cx="0" cy="-9" rx="5.5" ry="8.5" transform="rotate(216)"/><ellipse cx="0" cy="-9" rx="5.5" ry="8.5" transform="rotate(288)"/></g><circle r="4.5" fill="#FFD166"/></g></svg>`
-            },
-            trend: {
-                title: "🌱 The Smart Thinker",
-                subtitle: "“คุณคิดก่อนทำ”",
-                desc: "คุณมองผลระยะยาวและใช้เหตุผลก่อนตัดสินใจ จึงเลือกสิ่งที่ดีต่อสุขภาพได้อย่างมั่นใจ",
-                impact: "",
-                swap: "",
-                image: "",
-                svg: `<svg viewBox="0 0 200 200" class="w-full h-full"><circle cx="100" cy="100" r="88" fill="#FCE4EC"/><circle cx="100" cy="100" r="76" fill="#F8BBD0" opacity="0.6"/><path d="M 30 50 C 30 40, 45 40, 45 50 C 45 40, 60 40, 60 50 C 60 65, 45 75, 45 75 C 45 75, 30 65, 30 50 Z" fill="#FF80AB"/><path d="M 150 45 C 150 38, 160 38, 160 45 C 160 38, 170 38, 170 45 C 170 56, 160 63, 160 63 C 160 63, 150 56, 150 45 Z" fill="#EA80FC"/><path d="M 32 85 C 20 150, 55 185, 55 185 L 145 185 C 145 185, 180 150, 168 85 Z" fill="#FF80AB"/><path d="M 60 135 C 60 115, 140 115, 140 135 L 150 190 L 50 190 Z" fill="#FFF"/><path d="M 68 150 L 132 150 L 138 190 L 62 190 Z" fill="#F48FB1" opacity="0.5"/><circle cx="140" cy="142" r="12" fill="#FFCC80"/><circle cx="134" cy="133" r="4" fill="#FFCC80"/><circle cx="146" cy="133" r="4" fill="#FFCC80"/><circle cx="138" cy="140" r="1.5" fill="#3E2723"/><circle cx="142" cy="140" r="1.5" fill="#3E2723"/><circle cx="100" cy="92" r="46" fill="#FFF3E0"/><circle cx="78" cy="92" r="17" fill="#4A148C"/><circle cx="122" cy="92" r="17" fill="#4A148C"/><circle cx="82" cy="86" r="7" fill="#FFF"/><circle cx="126" cy="86" r="7" fill="#FFF"/><circle cx="74" cy="97" r="3" fill="#FFF"/><circle cx="118" cy="97" r="3" fill="#FFF"/><ellipse cx="68" cy="104" rx="7" ry="4" fill="#FF4081" opacity="0.6"/><ellipse cx="132" cy="104" rx="7" ry="4" fill="#FF4081" opacity="0.6"/><path d="M 48 85 C 48 45, 152 45, 152 85 C 122 68, 78 68, 48 85 Z" fill="#FF4081"/><circle cx="48" cy="60" r="9" fill="#AA00FF"/><circle cx="152" cy="60" r="9" fill="#AA00FF"/><path d="M 93 110 Q 97 115 100 110 Q 103 115 107 110" stroke="#880E4F" stroke-width="2.5" stroke-linecap="round" fill="none"/><g transform="translate(100,50) scale(0.55)"><g fill="#64B5F6"><ellipse cx="0" cy="-9" rx="5.5" ry="8.5"/><ellipse cx="0" cy="-9" rx="5.5" ry="8.5" transform="rotate(72)"/><ellipse cx="0" cy="-9" rx="5.5" ry="8.5" transform="rotate(144)"/><ellipse cx="0" cy="-9" rx="5.5" ry="8.5" transform="rotate(216)"/><ellipse cx="0" cy="-9" rx="5.5" ry="8.5" transform="rotate(288)"/></g><circle r="4.5" fill="#FFD166"/></g></svg>`
-            },
-            social: {
-                title: "☀️ The Positive Leader",
-                subtitle: "“คุณเป็นแรงบันดาลใจให้คนรอบตัว”",
-                desc: "คุณไม่เพียงดูแลตัวเอง แต่ยังสามารถชวนเพื่อนเลือกพฤติกรรมที่ดีได้อีกด้วย",
-                impact: "",
-                swap: "",
-                image: "",
-                svg: `<svg viewBox="0 0 200 200" class="w-full h-full"><circle cx="100" cy="100" r="88" fill="#F3E5F5"/><circle cx="100" cy="100" r="76" fill="#E1BEE7" opacity="0.6"/><circle cx="35" cy="55" r="10" fill="#AB47BC" opacity="0.3"/><circle cx="165" cy="65" r="14" fill="#AB47BC" opacity="0.3"/><path d="M 58 135 C 58 115, 142 115, 142 135 L 152 190 L 48 190 Z" fill="#7E57C2"/><rect x="126" y="140" width="22" height="30" rx="5" fill="#FFF" stroke="#CE93D8" stroke-width="2"/><path d="M 137 130 L 137 140" stroke="#FF4081" stroke-width="4" stroke-linecap="round"/><circle cx="132" cy="162" r="2.5" fill="#4E342E"/><circle cx="137" cy="164" r="2.5" fill="#4E342E"/><circle cx="142" cy="162" r="2.5" fill="#4E342E"/><circle cx="100" cy="92" r="46" fill="#FFCC80"/><circle cx="78" cy="92" r="16" fill="#311B92"/><circle cx="122" cy="92" r="16" fill="#311B92"/><circle cx="82" cy="87" r="6" fill="#FFF"/><circle cx="126" cy="87" r="6"/><circle cx="74" cy="96" r="2" fill="#FFF"/><circle cx="118" cy="96" r="2" fill="#FFF"/><path d="M 48 88 C 45 42, 155 42, 152 88 C 132 70, 68 70, 48 88 Z" fill="#37474F"/><path d="M 40 75 C 50 50, 130 35, 162 62 L 172 70 L 132 75 Z" fill="#263238"/><path d="M 91 108 Q 100 118 109 108" stroke="#263238" stroke-width="3" stroke-linecap="round" fill="none"/><g transform="translate(64,62) scale(0.5)"><g fill="#FFD54F"><ellipse cx="0" cy="-9" rx="5.5" ry="8.5"/><ellipse cx="0" cy="-9" rx="5.5" ry="8.5" transform="rotate(72)"/><ellipse cx="0" cy="-9" rx="5.5" ry="8.5" transform="rotate(144)"/><ellipse cx="0" cy="-9" rx="5.5" ry="8.5" transform="rotate(216)"/><ellipse cx="0" cy="-9" rx="5.5" ry="8.5" transform="rotate(288)"/></g><circle r="4.5" fill="#FFF"/></g></svg>`
-            },
-            stress: {
-                title: "⚡ The Brave One",
-                subtitle: "“คุณกำลังฝึกการปฏิเสธอย่างมั่นใจ”",
-                desc: "บางครั้งคุณอาจลังเลเมื่อเจอแรงกดดัน แต่การกล้าพูดว่า “ไม่” คือทักษะที่ฝึกได้ และจะช่วยให้คุณดูแลตัวเองได้ในระยะยาว",
-                impact: "",
-                swap: "",
-                image: "",
-                svg: `<svg viewBox="0 0 200 200" class="w-full h-full"><circle cx="100" cy="100" r="88" fill="#E0F7FA"/><circle cx="100" cy="100" r="76" fill="#B2EBF2" opacity="0.6"/><path d="M 25 60 C 25 50, 45 50, 50 60 C 55 50, 75 55, 70 65 C 75 75, 55 80, 45 75 C 35 80, 20 70, 25 60 Z" fill="#FFF" opacity="0.9"/><path d="M 135 50 C 135 42, 150 42, 155 50 C 160 42, 175 46, 170 55 C 175 62, 160 68, 150 63 C 142 68, 130 60, 135 50 Z" fill="#FFF" opacity="0.9"/><path d="M 58 135 C 58 115, 142 115, 142 135 L 152 190 L 48 190 Z" fill="#4DD0E1"/><path d="M 80 135 C 80 150, 120 150, 120 135 Z" fill="#E0F7FA"/><path d="M 50 90 C 50 40, 150 40, 150 90" stroke="#00838F" stroke-width="6" stroke-linecap="round" fill="none"/><rect x="42" y="82" width="16" height="26" rx="8" fill="#00838F"/><rect x="142" y="82" width="16" height="26" rx="8" fill="#00838F"/><circle cx="100" cy="92" r="46" fill="#FFE0B2"/><circle cx="78" cy="92" r="16" fill="#006064"/><circle cx="122" cy="92" r="16" fill="#006064"/><circle cx="82" cy="87" r="6" fill="#FFF"/><circle cx="126" cy="87" r="6" fill="#FFF"/><ellipse cx="70" cy="103" rx="6" ry="3" fill="#FF8A65" opacity="0.6"/><ellipse cx="130" cy="103" rx="6" ry="3" fill="#FF8A65" opacity="0.6"/><path d="M 48 88 C 48 48, 152 48, 152 88 C 118 72, 82 72, 48 88 Z" fill="#37474F"/><path d="M 93 110 Q 100 116 107 110" stroke="#37474F" stroke-width="2.5" stroke-linecap="round" fill="none"/><g transform="translate(100,52) scale(0.5)"><g fill="#FF8A65"><ellipse cx="0" cy="-9" rx="5.5" ry="8.5"/><ellipse cx="0" cy="-9" rx="5.5" ry="8.5" transform="rotate(72)"/><ellipse cx="0" cy="-9" rx="5.5" ry="8.5" transform="rotate(144)"/><ellipse cx="0" cy="-9" rx="5.5" ry="8.5" transform="rotate(216)"/><ellipse cx="0" cy="-9" rx="5.5" ry="8.5" transform="rotate(288)"/></g><circle r="4.5" fill="#FFD166"/></g></svg>`
-            }
-        };
-
-        // Active State Variables
-        let questions = [];
-        let characters = {};
-        let currentQuestion = 0;
-        let totalScore = 0;
+        // Global State Variable
+        let questionsData = [];
+        let charactersData = [];
+        let currentQuestionIndex = 0;
+        let totalUserScore = 0;
         let activeAdminTab = 'questions';
         let editingQuestionIndex = -1;
+        let editingCharacterId = null;
+        let currentResultCharacter = null;
 
-        // --- SCORE-RANGE → RESULT MAPPING ---
-        // Each answer gives 0-3 points. The sum across all questions decides the result:
-        //   13+   -> social (The Positive Leader)
-        //   10-12 -> hero   (The Independent)
-        //   7-9   -> trend  (The Smart Thinker)
-        //   0-6   -> stress (The Brave One)
-        // Edit the numbers below if you change how many questions are in the quiz.
-        const SCORE_BRACKETS = [
-            { min: 13, key: 'social' },
-            { min: 10, key: 'hero' },
-            { min: 7,  key: 'trend' },
-            { min: 0,  key: 'stress' }
-        ];
-
-        function getResultKeyForScore(score) {
-            for (const bracket of SCORE_BRACKETS) {
-                if (score >= bracket.min && characters[bracket.key]) return bracket.key;
-            }
-            // Fallback: the mapped key for this score range was deleted from the character list —
-            // just hand back whatever character does exist so the quiz never breaks.
-            const anyKey = Object.keys(characters)[0];
-            return anyKey;
-        }
-
-        // If ANYTHING throws anywhere in the app, make it loudly visible instead of silently
-        // doing nothing — this is what makes "I click save and nothing happens" diagnosable.
-        window.addEventListener('error', function(e) {
-            try {
-                alert('เกิดข้อผิดพลาดในระบบ (กรุณาแคปหน้าจอนี้ส่งให้ผู้พัฒนา):\n\n' + (e.message || 'unknown error') + '\nบรรทัด: ' + e.lineno);
-            } catch (_) { /* ignore */ }
-        });
-
-        // Initialize App State from LocalStorage
+        // Initialize Data on Window Load
         window.onload = function() {
-            loadStoredData();
+            loadInitialData();
+            updateUIState();
         };
 
-        function loadStoredData() {
+        function loadInitialData() {
             try {
-                const storedQ = localStorage.getItem('smoke_quiz_questions');
-                const storedC = localStorage.getItem('smoke_quiz_characters');
-                questions = storedQ ? JSON.parse(storedQ) : [...defaultQuestions];
-                characters = storedC ? JSON.parse(storedC) : JSON.parse(JSON.stringify(defaultCharacters));
-            } catch (err) {
-                // Corrupt data, or storage blocked entirely (e.g. private mode / file:// restrictions)
-                console.error('loadStoredData failed, falling back to defaults:', err);
-                questions = [...defaultQuestions];
-                characters = JSON.parse(JSON.stringify(defaultCharacters));
-            }
-            document.getElementById('q-count-badge').innerText = questions.length;
-        }
+                const savedQ = localStorage.getItem('smoke_quiz_questions');
+                const savedC = localStorage.getItem('smoke_quiz_characters');
+                questionsData = savedQ ? JSON.parse(savedQ) : JSON.parse(JSON.stringify(DEFAULT_QUESTIONS));
+                charactersData = savedC ? JSON.parse(savedC) : JSON.parse(JSON.stringify(DEFAULT_CHARACTERS));
 
-        // Never let a storage failure silently swallow the user's edit.
-        // Returns true if it actually persisted, false if it only stayed in memory for this session.
-        function saveDataToStorage() {
-            document.getElementById('q-count-badge').innerText = questions.length;
-            try {
-                localStorage.setItem('smoke_quiz_questions', JSON.stringify(questions));
-                localStorage.setItem('smoke_quiz_characters', JSON.stringify(characters));
-                return true;
-            } catch (err) {
-                console.error('saveDataToStorage failed:', err);
-                showToast("บันทึกลงเครื่องไม่สำเร็จ (พื้นที่เก็บข้อมูลเต็ม หรือเปิดไฟล์แบบ file:// ตรงๆ) การแก้ไขจะใช้ได้แค่ตอนนี้ ลองใช้รูปที่เล็กลง หรือเปิดผ่านเว็บเซิร์ฟเวอร์แทน", "warning");
-                return false;
+                const consChar = charactersData.find(c => c.id === 'conscientiousness');
+                if (consChar && !consChar.chibiSvg.includes('Gemini_Generated_Image_b0cuseb0cuseb0cu.png')) {
+                    consChar.chibiSvg = DEFAULT_CHARACTERS[0].chibiSvg;
+                    localStorage.setItem('smoke_quiz_characters', JSON.stringify(charactersData));
+                }
+            } catch (e) {
+                console.warn("Could not load from localStorage, fallback to defaults.", e);
+                questionsData = JSON.parse(JSON.stringify(DEFAULT_QUESTIONS));
+                charactersData = JSON.parse(JSON.stringify(DEFAULT_CHARACTERS));
             }
         }
 
-        // --- QUIZ GAME LOGIC ---
+        function saveToLocalStorage() {
+            try {
+                localStorage.setItem('smoke_quiz_questions', JSON.stringify(questionsData));
+                localStorage.setItem('smoke_quiz_characters', JSON.stringify(charactersData));
+            } catch (e) {
+                console.warn("Could not save to localStorage", e);
+            }
+        }
+
+        // Mandatory updateUIState function
+        function updateUIState() {
+            // Update question & character count badges
+            const qBadge = document.getElementById('q-count-badge');
+            const cBadge = document.getElementById('c-count-badge');
+            if (qBadge) qBadge.innerText = questionsData.length;
+            if (cBadge) cBadge.innerText = charactersData.length;
+
+            renderAdminQuestionsList();
+            renderAdminCharactersList();
+        }
+
+        function showToast(message, iconClass = "fa-circle-check text-emerald-400") {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-message');
+            const toastIcon = document.getElementById('toast-icon');
+
+            toastMsg.innerText = message;
+            toastIcon.className = `fa-solid ${iconClass} text-lg`;
+
+            toast.classList.remove('opacity-0', 'pointer-events-none', '-translate-y-4');
+            toast.classList.add('opacity-100', 'translate-y-0');
+
+            setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', 'pointer-events-none', '-translate-y-4');
+            }, 2600);
+        }
+
+        // Quiz Progression Functions
         function startQuiz() {
-            if (questions.length === 0) {
-                showToast("ยังไม่มีคำถามในระบบ กรุณาเพิ่มคำถามในระบบแอดมินก่อน", "warning");
+            if (questionsData.length === 0) {
+                showToast("ยังไม่มีคำถามในระบบ กรุณาเพิ่มคำถามในแอดมินก่อน", "fa-triangle-exclamation text-amber-400");
                 return;
             }
-            if (Object.keys(characters).length === 0) {
-                showToast("ยังไม่มีตัวละครในระบบ กรุณาเพิ่มตัวละครในระบบแอดมินก่อน", "warning");
-                return;
-            }
-            currentQuestion = 0;
-            totalScore = 0;
+            currentQuestionIndex = 0;
+            totalUserScore = 0;
             document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('admin-screen').classList.add('hidden');
             document.getElementById('result-screen').classList.add('hidden');
             document.getElementById('building-screen').classList.add('hidden');
-            document.getElementById('admin-screen').classList.add('hidden');
             document.getElementById('quiz-screen').classList.remove('hidden');
-            showQuestion();
+            renderQuestion();
         }
 
-        function showQuestion() {
-            const q = questions[currentQuestion];
-            document.getElementById('step-indicator').innerText = `ข้อ ${currentQuestion + 1}/${questions.length}`;
-            document.getElementById('question-title').innerText = `ข้อที่ ${currentQuestion + 1}: ${q.title}`;
-            
-            const progress = ((currentQuestion + 1) / questions.length) * 100;
-            document.getElementById('progress-bar').style.width = `${progress}%`;
+        function renderQuestion() {
+            const q = questionsData[currentQuestionIndex];
+            document.getElementById('step-indicator').innerText = `ข้อ ${currentQuestionIndex + 1} / ${questionsData.length}`;
+
+            // Progress bar
+            const percent = ((currentQuestionIndex + 1) / questionsData.length) * 100;
+            document.getElementById('progress-bar').style.width = `${percent}%`;
+
+            document.getElementById('question-title').innerText = q.title;
 
             const container = document.getElementById('options-container');
             container.innerHTML = '';
 
-            q.options.forEach((opt) => {
+            const optionColors = [
+                "hover:border-purple-300 hover:bg-purple-50/50",
+                "hover:border-pink-300 hover:bg-pink-50/50",
+                "hover:border-indigo-300 hover:bg-indigo-50/50",
+                "hover:border-teal-300 hover:bg-teal-50/50"
+            ];
+
+            q.options.forEach((opt, idx) => {
                 const btn = document.createElement('button');
-                btn.className = 'option-btn w-full text-left p-3.5 bg-gray-50/80 border border-gray-200/80 rounded-2xl text-xs md:text-sm text-gray-700 hover:bg-purple-50 hover:border-purple-300 transition font-medium';
-                btn.innerText = opt.text;
-                const pts = typeof opt.points === 'number' ? opt.points : 0;
-                btn.onclick = () => selectOption(pts);
+                btn.className = `option-btn w-full text-left p-3.5 bg-white border border-gray-200 rounded-2xl ${optionColors[idx % 4]} text-xs md:text-sm font-medium text-gray-700 flex items-center justify-between shadow-sm`;
+                btn.onclick = () => selectOption(opt.points);
+                btn.innerHTML = `
+                    <span>${opt.text}</span>
+                    <i class="fa-solid fa-chevron-right text-gray-300 text-xs ml-2"></i>
+                `;
                 container.appendChild(btn);
             });
         }
 
-        function selectOption(points) {
-            totalScore += (typeof points === 'number' ? points : 0);
-            currentQuestion++;
+        function selectOption(pts) {
+            totalUserScore += pts;
+            currentQuestionIndex++;
 
-            if (currentQuestion < questions.length) {
-                showQuestion();
+            if (currentQuestionIndex < questionsData.length) {
+                renderQuestion();
             } else {
-                startBuildingSequence();
+                showBuildingScreen();
             }
         }
 
-        // Fun little "painting your character" transition before the big reveal
-        const buildingLines = [
-            "กำลังผสมสี ระบายฝัน วาดตัวตนที่แท้จริง",
-            "กำลังแต่งแต้มบุคลิกจากคำตอบของคุณ",
-            "ใกล้เสร็จแล้ว... เตรียมเปิดตัวคาแรกเตอร์!"
-        ];
-
-        function startBuildingSequence() {
+        function showBuildingScreen() {
             document.getElementById('quiz-screen').classList.add('hidden');
             document.getElementById('building-screen').classList.remove('hidden');
-            document.getElementById('step-indicator').innerText = 'กำลังวาดภาพ...';
+            document.getElementById('step-indicator').innerText = "กำลังประมวลผล";
 
-            const subtext = document.getElementById('building-subtext');
-            let lineIdx = 0;
-            subtext.innerText = buildingLines[0];
-            const lineTimer = setInterval(() => {
-                lineIdx = (lineIdx + 1) % buildingLines.length;
-                subtext.innerText = buildingLines[lineIdx];
-            }, 650);
+            const messages = [
+                "กำลังผสมสี ระบายฝัน วาดตัวตนที่แท้จริง...",
+                "กำลังคำนวณมูลค่าสิ่งของที่คุณแลกได้...",
+                "ปั้นคาแรกเตอร์พร้อมเสิร์ฟภาพสวยให้คุณ..."
+            ];
+            let msgIdx = 0;
+            const subtextElem = document.getElementById('building-subtext');
+
+            const interval = setInterval(() => {
+                msgIdx = (msgIdx + 1) % messages.length;
+                subtextElem.innerText = messages[msgIdx];
+            }, 700);
 
             setTimeout(() => {
-                clearInterval(lineTimer);
-                document.getElementById('building-screen').classList.add('hidden');
-                showResult();
-            }, 1900);
+                clearInterval(interval);
+                showBoxScreen();
+            }, 2000);
         }
 
-        function showResult() {
+        function showBoxScreen() {
+            document.getElementById('building-screen').classList.add('hidden');
+            document.getElementById('box-screen').classList.remove('hidden');
+            document.getElementById('step-indicator').innerText = "กล่องสุ่มตัวตน";
+            
+            // Reset box animation state if played multiple times
+            const boxArt = document.getElementById('mystery-box-art');
+            if (boxArt) {
+                boxArt.className = "animate-box-shake relative z-10 w-full h-full flex items-center justify-center";
+            }
+        }
+
+        function playTwinkleSound() {
+            try {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                if (!AudioCtx) return;
+                const ctx = new AudioCtx();
+                
+                // Magical twinkle chimes (High frequency arpeggio notes with synth decay)
+                const notes = [1046.50, 1318.51, 1567.98, 1975.53, 2093.00, 2637.02, 3135.96];
+                
+                notes.forEach((freq, idx) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.05);
+                    
+                    gain.gain.setValueAtTime(0, ctx.currentTime + idx * 0.05);
+                    gain.gain.linearRampToValueAtTime(0.18, ctx.currentTime + idx * 0.05 + 0.015);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.05 + 0.45);
+                    
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    
+                    osc.start(ctx.currentTime + idx * 0.05);
+                    osc.stop(ctx.currentTime + idx * 0.05 + 0.5);
+                });
+
+                // Shimmer glissando layer for extra sparkle
+                setTimeout(() => {
+                    const sparkOsc = ctx.createOscillator();
+                    const sparkGain = ctx.createGain();
+                    sparkOsc.type = 'triangle';
+                    sparkOsc.frequency.setValueAtTime(3520, ctx.currentTime);
+                    sparkOsc.frequency.exponentialRampToValueAtTime(4186, ctx.currentTime + 0.3);
+                    sparkGain.gain.setValueAtTime(0.1, ctx.currentTime);
+                    sparkGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+                    sparkOsc.connect(sparkGain);
+                    sparkGain.connect(ctx.destination);
+                    sparkOsc.start();
+                    sparkOsc.stop(ctx.currentTime + 0.35);
+                }, 150);
+
+            } catch (e) {
+                console.log("Audio playback not allowed or supported:", e);
+            }
+        }
+
+        function openBlindBox() {
+            const boxArt = document.getElementById('mystery-box-art');
+            if (boxArt) {
+                boxArt.className = "animate-box-burst relative z-10 w-full h-full flex items-center justify-center";
+            }
+
+            // Play the sound effect ("วิ้ง~ ✨")
+            playTwinkleSound();
+
+            setTimeout(() => {
+                document.getElementById('box-screen').classList.add('hidden');
+                displayResult();
+            }, 500);
+        }
+
+        function displayResult() {
+            document.getElementById('building-screen').classList.add('hidden');
+            document.getElementById('box-screen').classList.add('hidden');
             document.getElementById('result-screen').classList.remove('hidden');
-            document.getElementById('step-indicator').innerText = 'ผลการสแกน';
+            document.getElementById('step-indicator').innerText = "ผลลัพธ์";
 
-            const availableKeys = Object.keys(characters);
-            const resultKey = getResultKeyForScore(totalScore) || availableKeys[0];
-            const result = characters[resultKey] || characters[availableKeys[0]];
+            // Find matching character based on score range
+            let matched = charactersData.find(c => totalUserScore >= c.minScore && totalUserScore <= c.maxScore);
 
-            // Render uploaded image if present, else fall back to the built-in vector art
+            // Fallback if no exact range match
+            if (!matched && charactersData.length > 0) {
+                matched = charactersData[0];
+            }
+
+            currentResultCharacter = matched;
+
+            const maxPossible = questionsData.length * 3;
+
+            document.getElementById('monster-title').innerText = matched ? matched.title : "Unmatched Character";
+            document.getElementById('monster-subtitle').innerText = matched ? matched.subtitle : "นิรนาม";
+            document.getElementById('monster-desc').innerText = matched ? matched.desc : "";
+            document.getElementById('impact-text').innerText = matched ? matched.impactText : "";
+            document.getElementById('swap-item').innerText = matched ? matched.swapItem : "";
+            document.getElementById('result-score-value').innerText = totalUserScore;
+            document.getElementById('result-score-max').innerText = maxPossible;
+
             const artWrapper = document.getElementById('chibi-art-wrapper');
-            if (result.image && result.image.trim() !== "") {
-                artWrapper.innerHTML = `<img src="${result.image}" alt="${escapeHtml(result.title)}" class="w-full h-full object-cover rounded-full">`;
-            } else if (result.svg) {
-                artWrapper.innerHTML = result.svg;
-            } else {
-                artWrapper.innerHTML = `<div class="text-4xl">🎭</div>`;
-            }
+            artWrapper.innerHTML = matched ? matched.chibiSvg : '🎨';
 
-            document.getElementById('monster-title').innerText = result.title;
-            document.getElementById('monster-subtitle').innerText = result.subtitle;
-            document.getElementById('monster-desc').innerText = result.desc;
-            document.getElementById('result-score-value').innerText = totalScore;
-            document.getElementById('result-score-max').innerText = questions.length * 3;
-
-            // Money-lost / swap-item boxes are optional — only show them if this character has that data
-            const impactBox = document.getElementById('impact-box');
-            const swapBox = document.getElementById('swap-box');
-            if (result.impact && result.impact.trim() !== '') {
-                document.getElementById('impact-text').innerText = result.impact;
-                impactBox.classList.remove('hidden');
-            } else {
-                impactBox.classList.add('hidden');
-            }
-            if (result.swap && result.swap.trim() !== '') {
-                document.getElementById('swap-item').innerText = result.swap;
-                swapBox.classList.remove('hidden');
-            } else {
-                swapBox.classList.add('hidden');
-            }
-
-            revealResultSequence();
-        }
-
-        // Reveal each part of the result card one-by-one, like a portrait being unveiled
-        function revealResultSequence() {
-            const order = [
-                'result-eyebrow',
-                null, // avatar handled separately with its own pop animation
-                'monster-title',
-                'monster-subtitle',
-                'result-score-badge',
-                'monster-desc',
-                'impact-box',
-                'swap-box',
-                'result-actions'
-            ];
-
-            // Reset everything to hidden state first
-            order.forEach(id => { if (id) document.getElementById(id).classList.remove('reveal-in'); });
-            const artWrapper = document.getElementById('chibi-art-wrapper');
-            artWrapper.classList.remove('reveal-pop');
-            // force reflow so the animation can replay
-            void artWrapper.offsetWidth;
-
-            let delay = 0;
-            order.forEach((id) => {
-                if (id === null) {
-                    setTimeout(() => artWrapper.classList.add('reveal-pop'), delay);
-                } else {
-                    const el = document.getElementById(id);
-                    setTimeout(() => el.classList.add('reveal-in'), delay);
-                }
-                delay += 220;
+            // Trigger animations
+            const reveals = document.querySelectorAll('.reveal-item');
+            reveals.forEach((el, index) => {
+                el.classList.remove('reveal-in');
+                setTimeout(() => {
+                    el.classList.add('reveal-in');
+                }, index * 90);
             });
         }
 
         function restartQuiz() {
-            currentQuestion = 0;
-            totalScore = 0;
-            document.getElementById('result-screen').classList.add('hidden');
-            document.getElementById('building-screen').classList.add('hidden');
-            document.getElementById('admin-screen').classList.add('hidden');
-            document.getElementById('start-screen').classList.remove('hidden');
-            document.getElementById('step-indicator').innerText = 'หน้าแรก';
+            startQuiz();
         }
 
+        // IG Story Canvas Renderer & Exporter
         function shareResult() {
-            showToast("บันทึกหน้าจอ นำไปโพสต์ลง IG Story / TikTok พร้อมติด #แลกเพื่อสิ่งที่ใช่ ได้เลย!", "info");
+            if (!currentResultCharacter) return;
+
+            const canvas = document.getElementById('export-canvas');
+            const ctx = canvas.getContext('2d');
+
+            // Draw IG Story Dimensions: 1080 x 1920
+            // Gradient Background
+            const bgGradient = ctx.createLinearGradient(0, 0, 1080, 1920);
+            bgGradient.addColorStop(0, '#FFF7EE');
+            bgGradient.addColorStop(0.5, '#F1E9FF');
+            bgGradient.addColorStop(1, '#E4F3FF');
+            ctx.fillStyle = bgGradient;
+            ctx.fillRect(0, 0, 1080, 1920);
+
+            // Inner Card Frame
+            ctx.fillStyle = '#FFFFFF';
+            ctx.shadowColor = 'rgba(100, 110, 220, 0.15)';
+            ctx.shadowBlur = 40;
+            ctx.shadowOffsetY = 20;
+            roundRect(ctx, 80, 120, 920, 1680, 60, true, false);
+            ctx.shadowColor = 'transparent';
+
+            // Top Hashtag Header
+            ctx.fillStyle = '#8C7AE6';
+            ctx.font = 'bold 36px Prompt, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('#แลกเพื่อสิ่งที่ใช่ x #ป้องกันนักสูบหน้าใหม่', 540, 220);
+
+            // Title
+            ctx.fillStyle = '#2D3436';
+            ctx.font = 'extrabold 56px Prompt, sans-serif';
+            ctx.fillText(currentResultCharacter.title, 540, 320);
+
+            // Subtitle Tag
+            ctx.fillStyle = '#F0E6FF';
+            roundRect(ctx, 240, 360, 600, 60, 30, true, false);
+            ctx.fillStyle = '#8C7AE6';
+            ctx.font = 'bold 32px Prompt, sans-serif';
+            ctx.fillText(currentResultCharacter.subtitle, 540, 402);
+
+            // Score Badge
+            const maxPts = questionsData.length * 3;
+            ctx.fillStyle = '#6366F1';
+            ctx.font = 'bold 32px Prompt, sans-serif';
+            ctx.fillText(`คะแนนของคุณ: ${totalUserScore} / ${maxPts} คะแนน`, 540, 490);
+
+            // Character Frame Circle
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(540, 800, 220, 0, Math.PI * 2);
+            ctx.fillStyle = '#F8F5FF';
+            ctx.fill();
+            ctx.lineWidth = 12;
+            ctx.strokeStyle = '#FFD9A0';
+            ctx.stroke();
+            ctx.restore();
+
+            // Convert SVG Chibi or Image tag to Image for Canvas
+            const svgString = currentResultCharacter.chibiSvg;
+            const img = new Image();
+            let url;
+            let isBlob = false;
+
+            if (svgString.trim().startsWith('<svg')) {
+                const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+                url = URL.createObjectURL(svgBlob);
+                isBlob = true;
+            } else {
+                const srcMatch = svgString.match(/src=["']([^"']+)["']/);
+                url = srcMatch ? srcMatch[1] : 'Gemini_Generated_Image_b0cuseb0cuseb0cu.png';
+            }
+
+            img.crossOrigin = "anonymous";
+            img.onload = function() {
+                ctx.drawImage(img, 360, 620, 360, 360);
+                if (isBlob) URL.revokeObjectURL(url);
+
+                // Description Box
+                ctx.fillStyle = '#FAFAFA';
+                roundRect(ctx, 140, 1080, 800, 260, 40, true, false);
+
+                ctx.fillStyle = '#4B5563';
+                ctx.font = '28px Prompt, sans-serif';
+                wrapText(ctx, currentResultCharacter.desc, 540, 1140, 740, 42);
+
+                // Swap Highlight Box
+                ctx.fillStyle = '#FFDD59';
+                roundRect(ctx, 140, 1380, 800, 180, 40, true, false);
+
+                ctx.fillStyle = '#111827';
+                ctx.font = 'bold 32px Prompt, sans-serif';
+                ctx.fillText('🎁 เอาเงินที่ประหยัดได้ทำไรดี:', 540, 1440);
+
+                ctx.fillStyle = '#000000';
+                ctx.font = 'bold 30px Prompt, sans-serif';
+                ctx.fillText(currentResultCharacter.swapItem, 540, 1500);
+
+                // Footer CTA
+                ctx.fillStyle = '#9CA3AF';
+                ctx.font = '26px Prompt, sans-serif';
+                ctx.fillText('สแกนตัวตนได้ที่: Smoke Type Quiz', 540, 1720);
+
+                // Trigger Download
+                const dataURL = canvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                link.download = `smoke-type-quiz-${currentResultCharacter.id}.png`;
+                link.href = dataURL;
+                link.click();
+
+                showToast("บันทึกรูปภาพสำเร็จ! พร้อมแชร์ลง IG Story", "fa-instagram text-pink-400");
+            };
+            img.src = url;
         }
 
-        // --- ADMIN SYSTEM CONTROLLERS ---
+        // Canvas Helper Functions
+        function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+            if (fill) ctx.fill();
+            if (stroke) ctx.stroke();
+        }
+
+        function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+            const words = text.split(' ');
+            let line = '';
+            let currentY = y;
+
+            for (let n = 0; n < words.length; n++) {
+                let testLine = line + words[n] + ' ';
+                let metrics = ctx.measureText(testLine);
+                let testWidth = metrics.width;
+                if (testWidth > maxWidth && n > 0) {
+                    ctx.fillText(line, x, currentY);
+                    line = words[n] + ' ';
+                    currentY += lineHeight;
+                } else {
+                    line = testLine;
+                }
+            }
+            ctx.fillText(line, x, currentY);
+        }
+
+        // ADMIN PANEL LOGIC
         function toggleAdminPanel() {
             const adminScreen = document.getElementById('admin-screen');
             const startScreen = document.getElementById('start-screen');
             const quizScreen = document.getElementById('quiz-screen');
             const resultScreen = document.getElementById('result-screen');
             const buildingScreen = document.getElementById('building-screen');
-            const container = document.getElementById('main-container');
 
             if (adminScreen.classList.contains('hidden')) {
+                // Show Admin
                 startScreen.classList.add('hidden');
                 quizScreen.classList.add('hidden');
                 resultScreen.classList.add('hidden');
                 buildingScreen.classList.add('hidden');
                 adminScreen.classList.remove('hidden');
-                container.classList.remove('max-w-md');
-                container.classList.add('max-w-xl'); // Expand for admin workspace
-                document.getElementById('step-indicator').innerText = 'ระบบแอดมิน';
-                renderAdminQuestions();
-                renderAdminCharacters();
+                document.getElementById('step-indicator').innerText = "ระบบแอดมิน";
+                updateUIState();
             } else {
+                // Close Admin back to Start
                 adminScreen.classList.add('hidden');
                 startScreen.classList.remove('hidden');
-                container.classList.remove('max-w-xl');
-                container.classList.add('max-w-md');
-                document.getElementById('step-indicator').innerText = 'หน้าแรก';
+                document.getElementById('step-indicator').innerText = "หน้าแรก";
             }
         }
 
-        function switchAdminTab(tab) {
-            activeAdminTab = tab;
+        function switchAdminTab(tabName) {
+            activeAdminTab = tabName;
             const qTab = document.getElementById('admin-tab-questions');
             const cTab = document.getElementById('admin-tab-characters');
-            const qBtn = document.getElementById('tab-btn-questions');
-            const cBtn = document.getElementById('tab-btn-characters');
+            const btnQ = document.getElementById('tab-btn-questions');
+            const btnC = document.getElementById('tab-btn-characters');
 
-            if (tab === 'questions') {
+            if (tabName === 'questions') {
                 qTab.classList.remove('hidden');
                 cTab.classList.add('hidden');
-                qBtn.className = "flex-1 py-2 text-center text-purple-600 border-b-2 border-purple-600 font-bold transition";
-                cBtn.className = "flex-1 py-2 text-center text-gray-400 hover:text-purple-600 transition";
+                btnQ.className = "flex-1 py-2 text-center text-purple-600 border-b-2 border-purple-600 font-bold transition";
+                btnC.className = "flex-1 py-2 text-center text-gray-400 hover:text-purple-600 transition";
             } else {
-                cTab.classList.remove('hidden');
                 qTab.classList.add('hidden');
-                cBtn.className = "flex-1 py-2 text-center text-purple-600 border-b-2 border-purple-600 font-bold transition";
-                qBtn.className = "flex-1 py-2 text-center text-gray-400 hover:text-purple-600 transition";
+                cTab.classList.remove('hidden');
+                btnC.className = "flex-1 py-2 text-center text-purple-600 border-b-2 border-purple-600 font-bold transition";
+                btnQ.className = "flex-1 py-2 text-center text-gray-400 hover:text-purple-600 transition";
             }
         }
 
-        // RENDER QUESTIONS LIST IN ADMIN
-        function renderAdminQuestions() {
+        function renderAdminQuestionsList() {
             const container = document.getElementById('questions-list-container');
+            if (!container) return;
+
             container.innerHTML = '';
 
-            if (questions.length === 0) {
-                container.innerHTML = `<div class="text-center py-6 text-xs text-gray-400">ยังไม่มีคำถาม กดปุ่ม "+ เพิ่มคำถามใหม่" เพื่อเริ่มต้น</div>`;
+            if (questionsData.length === 0) {
+                container.innerHTML = `<div class="text-center py-6 text-gray-400 text-xs">ยังไม่มีคำถาม กดปุ่ม 'เพิ่มคำถามใหม่' เพื่อสร้างข้อแรก</div>`;
                 return;
             }
 
-            questions.forEach((q, idx) => {
+            questionsData.forEach((q, idx) => {
                 const item = document.createElement('div');
-                item.className = 'p-3 bg-gray-50 border border-gray-200/80 rounded-2xl flex items-start justify-between gap-2 hover:bg-purple-50/50 transition';
+                item.className = "p-3 bg-white border border-gray-100 rounded-2xl shadow-sm flex items-center justify-between gap-2 text-xs";
                 item.innerHTML = `
-                    <div class="flex-1 text-xs">
-                        <div class="font-bold text-gray-800 mb-1">ข้อที่ ${idx + 1}: ${escapeHtml(q.title)}</div>
-                        <div class="text-[10px] text-gray-500 font-medium">${q.options.length} ตัวเลือกตอบ • คะแนนเต็มข้อนี้ 3</div>
-                    </div>
-                    <div class="flex items-center gap-1">
-                        <button onclick="openQuestionModal(${idx})" class="p-1.5 text-xs text-purple-600 hover:bg-purple-100 rounded-lg transition" title="แก้ไข">
-                            <i class="fa-solid fa-pen-to-square"></i>
-                        </button>
-                        <button onclick="deleteQuestion(${idx})" class="p-1.5 text-xs text-rose-500 hover:bg-rose-100 rounded-lg transition" title="ลบ">
-                            <i class="fa-solid fa-trash-can"></i>
-                        </button>
-                    </div>
-                `;
-                container.appendChild(item);
-            });
-        }
-
-        // RENDER CHARACTERS LIST IN ADMIN
-        function renderAdminCharacters() {
-            const container = document.getElementById('characters-list-container');
-            container.innerHTML = '';
-            document.getElementById('c-count-badge').innerText = Object.keys(characters).length;
-
-            const keys = Object.keys(characters);
-            if (keys.length === 0) {
-                container.innerHTML = `<div class="text-center py-6 text-xs text-gray-400">ยังไม่มีตัวละคร กดปุ่ม "+ เพิ่มตัวละครใหม่" เพื่อเริ่มต้น</div>`;
-                return;
-            }
-
-            keys.forEach((key) => {
-                const c = characters[key];
-                if (!c) return;
-
-                const item = document.createElement('div');
-                item.className = 'p-3 bg-gray-50 border border-gray-200/80 rounded-2xl flex items-center justify-between gap-3';
-
-                let avatarHTML = '';
-                if (c.image && c.image.trim() !== '') {
-                    avatarHTML = `<img src="${c.image}" class="w-10 h-10 rounded-full object-cover border border-purple-200">`;
-                } else {
-                    avatarHTML = `<div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-700 font-bold text-[9px]">SVG</div>`;
-                }
-
-                item.innerHTML = `
-                    <div class="flex items-center gap-3 flex-1 min-w-0">
-                        ${avatarHTML}
-                        <div class="min-w-0 flex-1">
-                            <div class="font-bold text-xs text-gray-800 truncate">${escapeHtml(c.title)}</div>
-                            <div class="text-[10px] text-purple-600 font-semibold truncate">${escapeHtml(c.subtitle)}</div>
-                        </div>
+                    <div class="flex-1 overflow-hidden pr-1">
+                        <div class="font-bold text-gray-800 truncate">${q.title}</div>
+                        <div class="text-[10px] text-gray-400 mt-0.5">${q.options.length} ตัวเลือก</div>
                     </div>
                     <div class="flex items-center gap-1 shrink-0">
-                        <button onclick="openCharacterModal('${key}')" class="px-3 py-1.5 bg-purple-100 text-purple-700 hover:bg-purple-200 rounded-xl text-xs font-bold transition flex items-center gap-1">
-                            <i class="fa-solid fa-pen"></i> แก้ไข
+                        <button onclick="openQuestionModal(${idx})" class="p-1.5 bg-purple-50 text-purple-600 hover:bg-purple-100 rounded-lg transition" title="แก้ไข">
+                            <i class="fa-solid fa-pen-to-square"></i>
                         </button>
-                        <button onclick="deleteCharacter('${key}')" class="p-1.5 text-xs text-rose-500 hover:bg-rose-100 rounded-lg transition" title="ลบตัวละคร">
+                        <button onclick="deleteQuestion(${idx})" class="p-1.5 bg-rose-50 text-rose-500 hover:bg-rose-100 rounded-lg transition" title="ลบ">
                             <i class="fa-solid fa-trash-can"></i>
                         </button>
                     </div>
@@ -1072,57 +1261,63 @@
             });
         }
 
-        function deleteCharacter(key) {
-            if (Object.keys(characters).length <= 1) {
-                showToast("ต้องมีตัวละครอย่างน้อย 1 แบบในระบบ", "warning");
+        function renderAdminCharactersList() {
+            const container = document.getElementById('characters-list-container');
+            if (!container) return;
+
+            container.innerHTML = '';
+
+            if (charactersData.length === 0) {
+                container.innerHTML = `<div class="text-center py-6 text-gray-400 text-xs">ยังไม่มีตัวละคร</div>`;
                 return;
             }
-            const isScoreMapped = SCORE_BRACKETS.some(b => b.key === key);
-            const msg = isScoreMapped
-                ? "ตัวละครนี้ถูกผูกไว้กับช่วงคะแนนของควิซ ถ้าลบ คนที่ทำคะแนนได้ในช่วงนี้จะได้ตัวละครอื่นแทนโดยอัตโนมัติ ต้องการลบจริงหรือไม่?"
-                : "ยืนยันการลบตัวละครนี้หรือไม่?";
-            if (!confirm(msg)) return;
 
-            delete characters[key];
-            renderAdminCharacters();
-            const persisted = saveDataToStorage();
-            if (persisted) showToast("ลบตัวละครเรียบร้อยแล้ว", "info");
+            charactersData.forEach((c) => {
+                const item = document.createElement('div');
+                item.className = "p-3 bg-white border border-gray-100 rounded-2xl shadow-sm flex items-center justify-between gap-2 text-xs";
+                item.innerHTML = `
+                    <div class="w-10 h-10 shrink-0 rounded-full bg-purple-50 flex items-center justify-center p-1">
+                        ${c.chibiSvg}
+                    </div>
+                    <div class="flex-1 overflow-hidden pr-1">
+                        <div class="font-bold text-gray-800 truncate">${c.title}</div>
+                        <div class="text-[10px] text-purple-600 font-medium">ช่วงคะแนน: ${c.minScore} - ${c.maxScore} คะแนน</div>
+                    </div>
+                    <div class="flex items-center gap-1 shrink-0">
+                        <button onclick="openCharacterModal('${c.id}')" class="p-1.5 bg-purple-50 text-purple-600 hover:bg-purple-100 rounded-lg transition" title="แก้ไข">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                        <button onclick="deleteCharacter('${c.id}')" class="p-1.5 bg-rose-50 text-rose-500 hover:bg-rose-100 rounded-lg transition" title="ลบ">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
         }
 
         // QUESTION MODAL HANDLERS
         function openQuestionModal(index) {
             editingQuestionIndex = index;
             const modal = document.getElementById('question-modal');
-            const modalTitle = document.getElementById('modal-q-title');
-
-            if (Object.keys(characters).length === 0) {
-                showToast("กรุณาเพิ่มตัวละครอย่างน้อย 1 แบบก่อนสร้างคำถาม", "warning");
-                return;
-            }
-
-            // Clear any red "missing field" highlighting left over from a previous attempt
-            ['q-input-title', 'q-input-text-0', 'q-input-text-1', 'q-input-text-2', 'q-input-text-3'].forEach(id => {
-                document.getElementById(id).classList.remove('border-rose-400', 'ring-2', 'ring-rose-200');
-            });
+            const titleElem = document.getElementById('modal-q-title');
 
             if (index === -1) {
-                modalTitle.innerText = "➕ เพิ่มคำถามใหม่";
+                titleElem.innerText = "เพิ่มคำถามใหม่";
                 document.getElementById('q-input-title').value = "";
-                for (let idx = 0; idx < 4; idx++) {
-                    document.getElementById(`q-input-text-${idx}`).value = "";
-                    // default points spread 0/1/2/3 across the four options so admins see the range
-                    document.getElementById(`q-input-points-${idx}`).value = String(idx);
+                for (let i = 0; i < 4; i++) {
+                    document.getElementById(`q-input-text-${i}`).value = "";
+                    document.getElementById(`q-input-points-${i}`).value = 3 - i;
                 }
             } else {
-                modalTitle.innerText = `✏️ แก้ไขคำถามข้อที่ ${index + 1}`;
-                const q = questions[index];
+                titleElem.innerText = `แก้ไขคำถามข้อที่ ${index + 1}`;
+                const q = questionsData[index];
                 document.getElementById('q-input-title').value = q.title;
-
-                for (let idx = 0; idx < 4; idx++) {
-                    const opt = q.options[idx];
-                    const pts = opt && typeof opt.points === 'number' ? opt.points : idx;
-                    document.getElementById(`q-input-points-${idx}`).value = String(pts);
-                    document.getElementById(`q-input-text-${idx}`).value = opt ? opt.text : "";
+                for (let i = 0; i < 4; i++) {
+                    if (q.options[i]) {
+                        document.getElementById(`q-input-text-${i}`).value = q.options[i].text;
+                        document.getElementById(`q-input-points-${i}`).value = q.options[i].points;
+                    }
                 }
             }
 
@@ -1135,336 +1330,174 @@
 
         function saveQuestionForm(e) {
             e.preventDefault();
-            try {
-                const title = document.getElementById('q-input-title').value.trim();
-                const options = [
-                    { text: document.getElementById('q-input-text-0').value.trim(), points: parseInt(document.getElementById('q-input-points-0').value, 10) || 0 },
-                    { text: document.getElementById('q-input-text-1').value.trim(), points: parseInt(document.getElementById('q-input-points-1').value, 10) || 0 },
-                    { text: document.getElementById('q-input-text-2').value.trim(), points: parseInt(document.getElementById('q-input-points-2').value, 10) || 0 },
-                    { text: document.getElementById('q-input-text-3').value.trim(), points: parseInt(document.getElementById('q-input-points-3').value, 10) || 0 }
-                ];
+            const qTitle = document.getElementById('q-input-title').value.trim();
 
-                // Do our own validation (native browser "please fill this field" tooltips
-                // often don't render correctly inside a scrolling popup / on mobile, which
-                // makes it look like the Save button does nothing at all).
-                const missingFields = [];
-                if (!title) missingFields.push(document.getElementById('q-input-title'));
-                options.forEach((opt, idx) => {
-                    if (!opt.text) missingFields.push(document.getElementById(`q-input-text-${idx}`));
-                });
-
-                if (missingFields.length > 0) {
-                    missingFields.forEach(el => {
-                        el.classList.add('border-rose-400', 'ring-2', 'ring-rose-200');
-                    });
-                    try { missingFields[0].scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (_) { /* not critical */ }
-                    try { missingFields[0].focus(); } catch (_) { /* not critical */ }
-                    showToast("กรุณากรอกหัวข้อคำถามและตัวเลือกให้ครบทั้ง 4 ข้อก่อนบันทึก", "warning");
-                    return;
-                }
-
-                const isNewQuestion = editingQuestionIndex === -1;
-                if (isNewQuestion) {
-                    questions.push({ title, options });
-                } else {
-                    questions[editingQuestionIndex] = { title, options };
-                }
-
-                // Always update the visible list and close the modal first — a storage
-                // hiccup should never make it look like nothing happened.
-                renderAdminQuestions();
-                closeQuestionModal();
-
-                const persisted = saveDataToStorage();
-                if (persisted) {
-                    showToast(isNewQuestion ? "เพิ่มคำถามใหม่เรียบร้อยแล้ว" : "บันทึกการแก้ไขคำถามเรียบร้อยแล้ว", "success");
-                }
-            } catch (err) {
-                console.error('saveQuestionForm crashed:', err);
-                alert('บันทึกไม่สำเร็จเนื่องจากข้อผิดพลาด:\n' + err.message + '\n\nกรุณาแคปหน้าจอนี้ส่งให้ผู้พัฒนาช่วยตรวจสอบ');
+            const options = [];
+            for (let i = 0; i < 4; i++) {
+                const optText = document.getElementById(`q-input-text-${i}`).value.trim();
+                const optPts = parseInt(document.getElementById(`q-input-points-${i}`).value, 10);
+                options.push({ text: optText, points: optPts });
             }
+
+            if (editingQuestionIndex === -1) {
+                questionsData.push({ title: qTitle, options: options });
+                showToast("เพิ่มคำถามใหม่เรียบร้อย");
+            } else {
+                questionsData[editingQuestionIndex] = { title: qTitle, options: options };
+                showToast("บันทึกการแก้ไขคำถามแล้ว");
+            }
+
+            saveToLocalStorage();
+            updateUIState();
+            closeQuestionModal();
         }
 
         function deleteQuestion(index) {
-            if (questions.length <= 1) {
-                showToast("ต้องมีคำถามอย่างน้อย 1 ข้อในระบบ", "warning");
-                return;
+            if (confirm("คุณแน่ใจหรือไม่ว่าต้องการลบคำถามข้อนี้?")) {
+                questionsData.splice(index, 1);
+                saveToLocalStorage();
+                updateUIState();
+                showToast("ลบคำถามแล้ว");
             }
-            questions.splice(index, 1);
-            renderAdminQuestions();
-            const persisted = saveDataToStorage();
-            if (persisted) showToast("ลบคำถามเรียบร้อยแล้ว", "info");
         }
 
         // CHARACTER MODAL HANDLERS
-        function openCharacterModal(key) {
-            const isNew = key === null || key === undefined;
-            const c = isNew ? { title: '', subtitle: '', desc: '', impact: '', swap: '', image: '', svg: '' } : characters[key];
-            if (!c) return;
+        function openCharacterModal(id) {
+            editingCharacterId = id;
+            const modal = document.getElementById('character-modal');
+            const titleElem = document.getElementById('modal-c-title');
 
-            ['c-input-title', 'c-input-subtitle', 'c-input-desc'].forEach(id => {
-                document.getElementById(id).classList.remove('border-rose-400', 'ring-2', 'ring-rose-200');
-            });
-
-            document.getElementById('c-input-key').value = isNew ? '' : key;
-            document.getElementById('c-input-title').value = c.title;
-            document.getElementById('c-input-subtitle').value = c.subtitle;
-            document.getElementById('c-input-desc').value = c.desc;
-            document.getElementById('c-input-impact').value = c.impact;
-            document.getElementById('c-input-swap').value = c.swap;
-            document.getElementById('c-input-image-data').value = c.image || '';
-
-            const preview = document.getElementById('c-image-preview');
-            const placeholder = document.getElementById('c-image-preview-placeholder');
-            const removeBtn = document.getElementById('c-image-remove-btn');
-            if (c.image && c.image.trim() !== '') {
-                preview.src = c.image;
-                preview.classList.remove('hidden');
-                placeholder.classList.add('hidden');
-                removeBtn.classList.remove('hidden');
+            if (id === null) {
+                titleElem.innerText = "เพิ่มตัวละครใหม่";
+                document.getElementById('c-input-title').value = "";
+                document.getElementById('c-input-subtitle').value = "";
+                document.getElementById('c-input-min').value = "0";
+                document.getElementById('c-input-max').value = "5";
+                document.getElementById('c-input-desc').value = "";
+                document.getElementById('c-input-impact').value = "";
+                document.getElementById('c-input-swap').value = "";
+                document.getElementById('c-input-svg').value = `<svg viewBox="0 0 200 200" class="w-full h-full"><circle cx="100" cy="100" r="80" fill="#E0F7FA"/><circle cx="100" cy="110" r="40" fill="#FFEAA7"/></svg>`;
             } else {
-                preview.src = '';
-                preview.classList.add('hidden');
-                placeholder.classList.remove('hidden');
-                removeBtn.classList.add('hidden');
+                titleElem.innerText = "แก้ไขตัวละคร";
+                const c = charactersData.find(item => item.id === id);
+                if (c) {
+                    document.getElementById('c-input-title').value = c.title;
+                    document.getElementById('c-input-subtitle').value = c.subtitle;
+                    document.getElementById('c-input-min').value = c.minScore;
+                    document.getElementById('c-input-max').value = c.maxScore;
+                    document.getElementById('c-input-desc').value = c.desc;
+                    document.getElementById('c-input-impact').value = c.impactText;
+                    document.getElementById('c-input-swap').value = c.swapItem;
+                    document.getElementById('c-input-svg').value = c.chibiSvg;
+                }
             }
-            document.getElementById('c-input-image-file').value = '';
 
-            document.getElementById('modal-c-title').innerText = isNew ? '➕ เพิ่มตัวละครใหม่' : `✏️ แก้ไขตัวละคร: ${c.title}`;
-            document.getElementById('character-modal').classList.remove('hidden');
+            modal.classList.remove('hidden');
         }
 
         function closeCharacterModal() {
             document.getElementById('character-modal').classList.add('hidden');
         }
 
-        // Read the chosen file, shrink it down, and store it as a compact base64 image
-        function handleCharacterImageUpload(event) {
-            const file = event.target.files && event.target.files[0];
-            if (!file) return;
-
-            if (!file.type.startsWith('image/')) {
-                showToast("กรุณาเลือกไฟล์รูปภาพเท่านั้น", "warning");
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onerror = function() {
-                showToast("อ่านไฟล์รูปภาพไม่สำเร็จ ลองใหม่อีกครั้ง", "warning");
-            };
-            reader.onload = function(e) {
-                const img = new Image();
-                img.onerror = function() {
-                    showToast("ไม่สามารถเปิดไฟล์นี้เป็นรูปภาพได้ ลองไฟล์อื่น", "warning");
-                };
-                img.onload = function() {
-                    try {
-                        const maxDim = 480;
-                        let w = img.width, h = img.height;
-                        if (w > h && w > maxDim) { h = Math.round(h * (maxDim / w)); w = maxDim; }
-                        else if (h >= w && h > maxDim) { w = Math.round(w * (maxDim / h)); h = maxDim; }
-
-                        const canvas = document.createElement('canvas');
-                        canvas.width = w;
-                        canvas.height = h;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, w, h);
-                        const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
-
-                        document.getElementById('c-input-image-data').value = dataUrl;
-                        const preview = document.getElementById('c-image-preview');
-                        preview.src = dataUrl;
-                        preview.classList.remove('hidden');
-                        document.getElementById('c-image-preview-placeholder').classList.add('hidden');
-                        document.getElementById('c-image-remove-btn').classList.remove('hidden');
-                    } catch (err) {
-                        console.error('Image processing failed:', err);
-                        showToast("ประมวลผลรูปภาพไม่สำเร็จ ลองใช้ไฟล์อื่นหรือรูปที่เล็กลง", "warning");
-                    }
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function removeCharacterImage() {
-            document.getElementById('c-input-image-data').value = '';
-            document.getElementById('c-input-image-file').value = '';
-            document.getElementById('c-image-preview').classList.add('hidden');
-            document.getElementById('c-image-preview-placeholder').classList.remove('hidden');
-            document.getElementById('c-image-remove-btn').classList.add('hidden');
-        }
-
-        // Turn a character title into a unique, storage-friendly key
-        function generateCharacterKey(title) {
-            let base = title.trim().toLowerCase()
-                .replace(/[^a-z0-9ก-๙]+/gi, '_')
-                .replace(/^_+|_+$/g, '');
-            if (!base) base = 'char';
-            let key = base;
-            let i = 1;
-            while (characters[key]) {
-                key = `${base}_${i}`;
-                i++;
-            }
-            return key;
-        }
-
         function saveCharacterForm(e) {
             e.preventDefault();
-            try {
-                let key = document.getElementById('c-input-key').value;
-                const title = document.getElementById('c-input-title').value.trim();
-                const subtitle = document.getElementById('c-input-subtitle').value.trim();
-                const desc = document.getElementById('c-input-desc').value.trim();
+            const title = document.getElementById('c-input-title').value.trim();
+            const subtitle = document.getElementById('c-input-subtitle').value.trim();
+            const minScore = parseInt(document.getElementById('c-input-min').value, 10);
+            const maxScore = parseInt(document.getElementById('c-input-max').value, 10);
+            const desc = document.getElementById('c-input-desc').value.trim();
+            const impactText = document.getElementById('c-input-impact').value.trim();
+            const swapItem = document.getElementById('c-input-swap').value.trim();
+            const chibiSvg = document.getElementById('c-input-svg').value.trim();
 
-                const missingFields = [];
-                if (!title) missingFields.push(document.getElementById('c-input-title'));
-                if (!subtitle) missingFields.push(document.getElementById('c-input-subtitle'));
-                if (!desc) missingFields.push(document.getElementById('c-input-desc'));
-
-                if (missingFields.length > 0) {
-                    missingFields.forEach(el => el.classList.add('border-rose-400', 'ring-2', 'ring-rose-200'));
-                    try { missingFields[0].scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (_) { /* not critical */ }
-                    try { missingFields[0].focus(); } catch (_) { /* not critical */ }
-                    showToast("กรุณากรอกชื่อตัวละคร คำบรรยายย่อย และบทวิเคราะห์ให้ครบก่อนบันทึก", "warning");
-                    return;
+            if (editingCharacterId === null) {
+                const newId = 'char_' + Date.now();
+                charactersData.push({
+                    id: newId,
+                    minScore, maxScore,
+                    title, subtitle, desc, impactText, swapItem, chibiSvg
+                });
+                showToast("เพิ่มตัวละครใหม่แล้ว");
+            } else {
+                const idx = charactersData.findIndex(c => c.id === editingCharacterId);
+                if (idx !== -1) {
+                    charactersData[idx] = {
+                        id: editingCharacterId,
+                        minScore, maxScore,
+                        title, subtitle, desc, impactText, swapItem, chibiSvg
+                    };
+                    showToast("บันทึกข้อมูลตัวละครแล้ว");
                 }
+            }
 
-                const isNew = !key;
+            saveToLocalStorage();
+            updateUIState();
+            closeCharacterModal();
+        }
 
-                if (isNew) {
-                    key = generateCharacterKey(title);
-                }
-
-                const existing = characters[key] || {};
-                characters[key] = {
-                    title: title,
-                    subtitle: subtitle,
-                    desc: desc,
-                    impact: document.getElementById('c-input-impact').value.trim(),
-                    swap: document.getElementById('c-input-swap').value.trim(),
-                    image: document.getElementById('c-input-image-data').value,
-                    svg: existing.svg || ''
-                };
-
-                renderAdminCharacters();
-                closeCharacterModal();
-
-                const persisted = saveDataToStorage();
-                if (persisted) {
-                    showToast(isNew ? "เพิ่มตัวละครใหม่เรียบร้อยแล้ว — เลือกได้ทันทีตอนสร้าง/แก้ไขคำถาม" : "อัปเดตข้อมูลตัวละครเรียบร้อยแล้ว", "success");
-                }
-            } catch (err) {
-                console.error('saveCharacterForm crashed:', err);
-                alert('บันทึกไม่สำเร็จเนื่องจากข้อผิดพลาด:\n' + err.message + '\n\nกรุณาแคปหน้าจอนี้ส่งให้ผู้พัฒนาช่วยตรวจสอบ');
+        function deleteCharacter(id) {
+            if (confirm("คุณแน่ใจหรือไม่ว่าต้องการลบตัวละครนี้?")) {
+                charactersData = charactersData.filter(c => c.id !== id);
+                saveToLocalStorage();
+                updateUIState();
+                showToast("ลบตัวละครเรียบร้อย");
             }
         }
 
-        function resetDataToDefault() {
-            try {
-                localStorage.removeItem('smoke_quiz_questions');
-                localStorage.removeItem('smoke_quiz_characters');
-            } catch (err) {
-                console.error('resetDataToDefault: could not clear storage', err);
-            }
-            loadStoredData();
-            renderAdminQuestions();
-            renderAdminCharacters();
-            showToast("คืนค่าเริ่มต้นทั้งหมดเรียบร้อยแล้ว", "info");
-        }
-
-        // Download the current questions + characters as a .json file the admin keeps themselves —
-        // this works completely independently of the browser's localStorage.
+        // EXPORT / IMPORT BACKUP JSON
         function exportQuizData() {
-            try {
-                const payload = {
-                    exportedAt: new Date().toISOString(),
-                    questions: questions,
-                    characters: characters
-                };
-                const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                const stamp = new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-');
-                a.href = url;
-                a.download = `smoke-quiz-backup-${stamp}.json`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                showToast("ส่งออกไฟล์สำรองเรียบร้อยแล้ว เก็บไฟล์นี้ไว้ให้ดีนะ", "success");
-            } catch (err) {
-                console.error('exportQuizData failed:', err);
-                showToast("ส่งออกไฟล์ไม่สำเร็จ ลองอีกครั้ง", "warning");
-            }
+            const backupObj = {
+                version: "1.0",
+                exportDate: new Date().toISOString(),
+                questions: questionsData,
+                characters: charactersData
+            };
+
+            const jsonStr = JSON.stringify(backupObj, null, 2);
+            const blob = new Blob([jsonStr], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `smoke-quiz-backup-${new Date().toISOString().slice(0,10)}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+
+            showToast("ส่งออกไฟล์สำรอง JSON สำเร็จ");
         }
 
-        // Load a previously exported .json backup back into the app
         function importQuizData(event) {
-            const file = event.target.files && event.target.files[0];
+            const file = event.target.files[0];
             if (!file) return;
 
             const reader = new FileReader();
-            reader.onerror = function() {
-                showToast("อ่านไฟล์สำรองไม่สำเร็จ", "warning");
-            };
             reader.onload = function(e) {
                 try {
-                    const data = JSON.parse(e.target.result);
-                    if (!Array.isArray(data.questions) || typeof data.characters !== 'object' || data.characters === null) {
-                        throw new Error('invalid backup file shape');
+                    const imported = JSON.parse(e.target.result);
+                    if (imported.questions && imported.characters) {
+                        questionsData = imported.questions;
+                        charactersData = imported.characters;
+                        saveToLocalStorage();
+                        updateUIState();
+                        showToast("นำเข้าข้อมูลสำรองเรียบร้อยแล้ว!", "fa-circle-check text-emerald-400");
+                    } else {
+                        showToast("รูปแบบไฟล์ JSON ไม่ถูกต้อง", "fa-circle-xmark text-rose-400");
                     }
-                    questions = data.questions;
-                    characters = data.characters;
-                    renderAdminQuestions();
-                    renderAdminCharacters();
-                    const persisted = saveDataToStorage();
-                    showToast(persisted
-                        ? "นำเข้าไฟล์สำรองและบันทึกลงเครื่องเรียบร้อยแล้ว"
-                        : "นำเข้าไฟล์สำรองสำเร็จ (ใช้ได้ตอนนี้ แต่บันทึกลงเครื่องไม่ได้ — ส่งออกไว้อีกครั้งหลังแก้ไข)",
-                        "success");
                 } catch (err) {
-                    console.error('importQuizData failed:', err);
-                    showToast("ไฟล์นี้ไม่ใช่ไฟล์สำรองที่ถูกต้อง กรุณาเลือกไฟล์ .json ที่ส่งออกจากระบบนี้", "warning");
-                } finally {
-                    event.target.value = '';
+                    showToast("เกิดข้อผิดพลาดในการอ่านไฟล์ JSON", "fa-circle-xmark text-rose-400");
                 }
             };
             reader.readAsText(file);
         }
 
-        // UTILITY FUNCTIONS
-        function showToast(msg, type = 'success') {
-            const toast = document.getElementById('toast');
-            const message = document.getElementById('toast-message');
-            const icon = document.getElementById('toast-icon');
-
-            message.innerText = msg;
-            if (type === 'warning') {
-                icon.className = 'fa-solid fa-triangle-exclamation text-amber-400 text-lg';
-            } else if (type === 'info') {
-                icon.className = 'fa-solid fa-circle-info text-sky-400 text-lg';
-            } else {
-                icon.className = 'fa-solid fa-circle-check text-emerald-400 text-lg';
+        function resetDataToDefault() {
+            if (confirm("คุณต้องการคืนค่าเริ่มต้นทั้งหมดใช่หรือไม่? ข้อมูลที่แก้ไขจะถูกรีเซ็ต")) {
+                questionsData = JSON.parse(JSON.stringify(DEFAULT_QUESTIONS));
+                charactersData = JSON.parse(JSON.stringify(DEFAULT_CHARACTERS));
+                saveToLocalStorage();
+                updateUIState();
+                showToast("คืนค่าเริ่มต้นทั้งหมดแล้ว");
             }
-
-            toast.classList.remove('opacity-0', 'pointer-events-none', '-translate-y-4');
-            toast.classList.add('opacity-100', 'translate-y-0');
-
-            setTimeout(() => {
-                toast.classList.remove('opacity-100', 'translate-y-0');
-                toast.classList.add('opacity-0', 'pointer-events-none', '-translate-y-4');
-            }, 3000);
-        }
-
-        function escapeHtml(text) {
-            return text
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
         }
     </script>
 </body>
