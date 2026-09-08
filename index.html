@@ -58,7 +58,6 @@
             50% { transform: translateY(-8px); }
         }
 
-        /* Painterly frame around result character */
         .painting-frame {
             position: relative;
             padding: 8px;
@@ -111,7 +110,6 @@
             50% { transform: scale(1.15) rotate(15deg); opacity: 1; }
         }
 
-        /* Loading / Building spinner */
         .brush-spinner {
             width: 84px;
             height: 84px;
@@ -147,7 +145,6 @@
             40% { transform: translateY(-6px); opacity: 1; }
         }
 
-        /* Staggered reveal for results */
         .reveal-item {
             opacity: 0;
             transform: translateY(14px) scale(0.98);
@@ -181,7 +178,6 @@
             animation: box-burst 0.55s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
 
-        /* Custom Scrollbar */
         .custom-scrollbar::-webkit-scrollbar {
             width: 6px;
         }
@@ -200,7 +196,6 @@
 </head>
 <body class="flex items-center justify-center min-h-screen pt-12 pb-12 px-3 sm:pt-16 sm:pb-16 sm:px-16 md:px-20">
 
-    <!-- Reusable SVG floral patterns -->
     <svg width="0" height="0" style="position:absolute" aria-hidden="true">
         <defs>
             <pattern id="flowerPatternH" patternUnits="userSpaceOnUse" width="320" height="70">
@@ -222,7 +217,6 @@
         </defs>
     </svg>
 
-    <!-- Floral Borders -->
     <svg class="fixed top-0 left-0 right-0 h-12 sm:h-16 w-full z-[1] pointer-events-none" preserveAspectRatio="none" aria-hidden="true"><rect width="100%" height="100%" fill="url(#flowerPatternH)"/></svg>
     <svg class="fixed bottom-0 left-0 right-0 h-12 sm:h-16 w-full z-[1] pointer-events-none" preserveAspectRatio="none" aria-hidden="true"><rect width="100%" height="100%" fill="url(#flowerPatternH)"/></svg>
     <svg class="hidden sm:block fixed top-0 bottom-0 left-0 sm:w-16 md:w-20 h-full z-[1] pointer-events-none" preserveAspectRatio="none" aria-hidden="true"><rect width="100%" height="100%" fill="url(#flowerPatternV)"/></svg>
@@ -237,7 +231,6 @@
     <!-- Main Container Card -->
     <div id="main-container" class="w-full max-w-md glass-card p-5 md:p-8 relative overflow-hidden my-4 border border-white transition-all duration-300 z-10">
         
-        <!-- Decoration Floating Blobs -->
         <div class="absolute -top-12 -right-12 w-36 h-36 bg-pink-200 rounded-full blur-2xl opacity-60 pointer-events-none"></div>
         <div class="absolute -bottom-12 -left-12 w-36 h-36 bg-purple-200 rounded-full blur-2xl opacity-60 pointer-events-none"></div>
 
@@ -297,9 +290,7 @@
                 ข้อที่ 1: คำถาม...
             </h2>
 
-            <div id="options-container" class="space-y-2.5 mb-4">
-                <!-- Dynamic Options Injected via JS -->
-            </div>
+            <div id="options-container" class="space-y-2.5 mb-4"></div>
         </div>
 
         <!-- SCREEN 2.5: BUILDING / ASSEMBLING CHARACTER -->
@@ -329,26 +320,19 @@
             </p>
 
             <div id="blind-box-container" onclick="openBlindBox()" class="relative w-44 h-44 mx-auto mb-6 cursor-pointer group flex items-center justify-center">
-                <!-- Outer Glow Aura -->
                 <div class="absolute inset-0 bg-gradient-to-r from-purple-300 via-pink-300 to-amber-300 rounded-3xl blur-xl opacity-60 group-hover:opacity-90 transition duration-300"></div>
                 
-                <!-- Shaking Box Wrapper -->
                 <div id="mystery-box-art" class="animate-box-shake relative z-10 w-full h-full flex items-center justify-center">
                     <svg viewBox="0 0 200 200" class="w-36 h-36 drop-shadow-xl filter group-hover:brightness-105 transition">
-                        <!-- Box Body -->
                         <rect x="35" y="75" width="130" height="95" rx="18" fill="url(#boxGradient)"/>
                         <rect x="35" y="75" width="130" height="95" rx="18" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-opacity="0.6"/>
-                        <!-- Ribbons -->
                         <rect x="88" y="75" width="24" height="95" fill="#FFD166"/>
                         <rect x="35" y="112" width="130" height="20" fill="#FFD166"/>
-                        <!-- Lid -->
                         <rect x="28" y="55" width="144" height="30" rx="10" fill="#FF78B6"/>
                         <rect x="88" y="55" width="24" height="30" fill="#FFD166"/>
-                        <!-- Ribbon Bow Top -->
                         <path d="M 100 55 C 75 25, 50 50, 90 55 C 60 60, 85 25, 100 55 Z" fill="#FFD166"/>
                         <path d="M 100 55 C 125 25, 150 50, 110 55 C 140 60, 115 25, 100 55 Z" fill="#FFD166"/>
                         <circle cx="100" cy="55" r="8" fill="#FFF"/>
-                        <!-- Question Mark Badge -->
                         <circle cx="100" cy="122" r="22" fill="#FFFFFF"/>
                         <text x="100" y="132" font-family="Prompt, sans-serif" font-weight="900" font-size="28" fill="#8C7AE6" text-anchor="middle">?</text>
                         <defs>
@@ -372,15 +356,12 @@
                 ✨ ผลการวิเคราะห์ตัวละครของคุณ ✨
             </div>
 
-            <!-- Painterly portrait frame around character -->
             <div class="painting-frame w-44 h-44 mx-auto mb-3 relative">
                 <i class="fa-solid fa-star sparkle-deco text-sm" style="top:-4px; left:6px; animation-delay:0s;"></i>
                 <i class="fa-solid fa-sparkle sparkle-deco text-base" style="top:8px; right:-6px; animation-delay:0.4s;"></i>
                 <i class="fa-solid fa-star sparkle-deco text-xs" style="bottom:-2px; left:-2px; animation-delay:0.8s;"></i>
                 <div class="painting-canvas">
-                    <div id="chibi-art-wrapper" class="chibi-avatar-container w-full h-full relative flex items-center justify-center overflow-hidden rounded-full">
-                        <!-- SVG / IMG injected via Javascript -->
-                    </div>
+                    <div id="chibi-art-wrapper" class="chibi-avatar-container w-full h-full relative flex items-center justify-center overflow-hidden rounded-full"></div>
                 </div>
             </div>
 
@@ -395,7 +376,7 @@
                 คุณได้ <span id="result-score-value">0</span> / <span id="result-score-max">0</span> คะแนน
             </div>
 
-            <p id="monster-desc" class="reveal-item text-xs text-gray-600 mb-3 text-left bg-purple-50/50 p-3 rounded-2xl border border-purple-100/60 leading-relaxed">
+            <p id="monster-desc" class="reveal-item text-xs text-gray-600 mb-3 text-left bg-purple-50/50 p-3 rounded-2xl border border-purple-100/60 leading-relaxed whitespace-pre-line">
                 Description...
             </p>
 
@@ -416,7 +397,7 @@
             </div>
 
             <div id="result-actions" class="reveal-item space-y-2">
-                <button onclick="shareResult()" class="w-full bg-gradient-to-r from-emerald-400 to-teal-500 text-white font-bold py-3 px-4 rounded-xl shadow-md hover:opacity-95 transition flex items-center justify-center text-xs">
+                <button id="btn-share-ig" onclick="shareResult()" class="w-full bg-gradient-to-r from-emerald-400 to-teal-500 text-white font-bold py-3 px-4 rounded-xl shadow-md hover:opacity-95 transition flex items-center justify-center text-xs">
                     <i class="fa-brands fa-instagram text-base mr-2"></i> บันทึกรูปแชร์ลง IG Story (#แลกเพื่อสิ่งที่ใช่)
                 </button>
                 <button onclick="restartQuiz()" class="w-full bg-gray-100 text-gray-600 font-semibold py-2 px-4 rounded-xl hover:bg-gray-200 transition text-xs">
@@ -436,7 +417,6 @@
                 </button>
             </div>
 
-            <!-- Admin Navigation Tabs -->
             <div class="flex border-b border-gray-200 mb-4 text-xs font-semibold">
                 <button id="tab-btn-questions" onclick="switchAdminTab('questions')" class="flex-1 py-2 text-center text-purple-600 border-b-2 border-purple-600 font-bold transition">
                     <i class="fa-solid fa-clipboard-question mr-1"></i> จัดการคำถาม (<span id="q-count-badge">0</span>)
@@ -458,9 +438,7 @@
                     </button>
                 </div>
 
-                <div id="questions-list-container" class="space-y-2 max-h-80 overflow-y-auto pr-1 custom-scrollbar">
-                    <!-- Dynamic Questions Injected via JS -->
-                </div>
+                <div id="questions-list-container" class="space-y-2 max-h-80 overflow-y-auto pr-1 custom-scrollbar"></div>
             </div>
 
             <!-- TAB 2: CHARACTERS EDITOR -->
@@ -471,12 +449,9 @@
                         <i class="fa-solid fa-plus"></i> เพิ่มตัวละครใหม่
                     </button>
                 </div>
-                <div id="characters-list-container" class="space-y-3 max-h-80 overflow-y-auto pr-1 custom-scrollbar">
-                    <!-- Dynamic Characters Injected via JS -->
-                </div>
+                <div id="characters-list-container" class="space-y-3 max-h-80 overflow-y-auto pr-1 custom-scrollbar"></div>
             </div>
 
-            <!-- Admin Backup / Restore Footer -->
             <div class="mt-5 pt-3 border-t border-gray-100 space-y-2">
                 <div class="flex items-center gap-2">
                     <button onclick="exportQuizData()" class="flex-1 text-xs bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-bold px-3 py-2 rounded-xl border border-emerald-200 flex items-center justify-center gap-1">
@@ -631,8 +606,8 @@
                 </div>
 
                 <div>
-                    <label class="block font-bold text-gray-700 mb-1">โค้ด SVG ของรูปตัวละคร (Chibi SVG):</label>
-                    <textarea id="c-input-svg" rows="3" required class="w-full p-2 bg-gray-50 border border-gray-200 rounded-xl font-mono text-[10px]" placeholder="<svg viewBox='0 0 200 200'>...</svg>"></textarea>
+                    <label class="block font-bold text-gray-700 mb-1">โค้ด SVG หรือ HTML Img ของรูปตัวละคร:</label>
+                    <textarea id="c-input-svg" rows="3" required class="w-full p-2 bg-gray-50 border border-gray-200 rounded-xl font-mono text-[10px]" placeholder="<img src='...' /> หรือ <svg>...</svg>"></textarea>
                 </div>
 
                 <div class="flex justify-end gap-2 pt-2 border-t border-gray-100">
@@ -685,7 +660,7 @@
                 ]
             },
             {
-                title: "5.ในมุมมองของคุณ การที่เราเลือก \ไม่เริ่มสูบบุหรี่/บุหรี่ไฟฟ้า ส่งผลดีที่คุ้มค่าที่สุดกับชีวิตเราในเรื่องไหน?",
+                title: "5.ในมุมมองของคุณ การที่เราเลือก ไม่เริ่มสูบบุหรี่/บุหรี่ไฟฟ้า ส่งผลดีที่คุ้มค่าที่สุดกับชีวิตเราในเรื่องไหน?",
                 options: [
                     { text: "หน้าตาดูสดใส ปากไม่ดำ กลิ่นตัวหอมสะอาด ช่วยเสริมบุคลิกภาพให้ดูดีขึ้น", points: 1 },
                     { text: "อิสระทางร่างกายและจิตใจ! สมองโปร่ง โฟกัสเป้าหมายชีวิตได้เต็มที่", points: 3 },
@@ -706,7 +681,6 @@
                 impactText: "เงินที่ได้จากการเลิกสูบบุหรี่ 1 ปี เซฟเงินได้เต็มๆ ~18,000 - 25,000 บาทต่อปี!",
                 swapItem: "🎟️ บัตรคอนเสิร์ตศิลปินโปรด + ✈️ ทริปเที่ยว!",
                 chibiSvg: `<img src="https://i.ibb.co/Hfn010KS/Gemini-Generated-Image-b0cuseb0cuseb0cu-removebg-preview.png" alt="พี่สติเป๊ะ" class="w-full h-auto max-h-full object-contain transition-transform duration-300 hover:scale-105" />`,
-
             },
             {
                 id: "extraversion",
@@ -723,13 +697,12 @@
                 id: "openness",
                 minScore: 7,
                 maxScore: 9,
-                title: "พี่สายลอง (Openness)",
+                title: "พี่สายลอง (Openness to Experience)",
                 subtitle: "การเปิดรับสิ่งใหม่ • เสี่ยง (ปานกลาง-สูง)",
                 desc: "ช่างสังเกต มีจินตนาการสูง ชอบทดลองสิ่งที่ไม่เคยเจอ จุดอ่อนสำคัญคือแพ้ทาง 'ความแปลกใหม่' นวัตกรรม ดีไซน์ที่สวยงาม \n\n💭 ข้อคิด: ความช่างสงสัยเป็นพลังสร้างสรรค์ที่วิเศษมาก เพียงแค่ต้องเลือก 'เปิดรับ' สิ่งที่ให้คุณค่ากับชีวิตมากกว่าสิ่งที่เป็นพิษ\n\n🎨 แนวทางแก้ไข: เบี่ยงเบนความสนใจด้วยสิ่งอื่น ลองเข้าวงการ Specialty Coffee, ชาเบลนด์พิเศษ หรือฝึกทำ Mocktail แปลกใหม่ หรือหากิจกรรมเติมไฟสร้างสรรค์ เช่น งาน DIY, กราฟิกดีไซน์, การถ่ายภาพ หรือออกเดินทางท่องเที่ยวธรรมชาติ",
                 impactText: "💡 รู้หรือไม่?: หยุดสูบแค่ 2 สัปดาห์ ความจุปอดจะฟื้นตัว",
                 swapItem: "🥤 ชาไข่มุก 150 แก้ว + 👗 เสื้อผ้าแฟชั่นชุดใหม่ยกตู้!",
                 chibiSvg: `<img src="https://i.ibb.co/qYkvjcbN/Gemini-Generated-Image-ftm448ftm448ftm4.png" alt="พี่สายลอง" class="w-full h-full object-contain transition-transform duration-300 hover:scale-105" />`,
-
             },
             {
                 id: "agreeableness",
@@ -740,8 +713,7 @@
                 desc: "แคร์ความรู้สึกผู้อื่น ขี้สงสาร ไม่อยากมีข้อขัดแย้ง ปฏิเสธคนไม่เป็น กลัวถูกตัดออกจากกลุ่ม หรือกลัวเข้ากับคนอื่นไม่ได้\n\n🤝 ข้อคิด: การปฏิเสธพฤติกรรม ไม่ได้แปลว่าเราปฏิเสธเพื่อน เพื่อนที่รักเราจริงจะเคารพการตัดสินใจและสุขภาพของเราเสมอ\n\n🛡️ แนวทางแก้ไข: เทคนิคปฏิเสธเมื่อเพื่อนชวนสูบบุหรี่แบบนุ่มนวล เช่น 'ช่วงนี้คอไม่ค่อยดี ขอผ่านนะ' หรือ 'เดี๋ยวเรานั่งคุยเป็นเพื่อน แต่ขอไม่สูบนะ' และเน้นชวนเพื่อนทำกิจกรรมที่ไม่เปิดช่องให้สูบบุหรี่ เช่น เข้าโรงหนัง ",
                 impactText: "สูญเสียเงินละลายแม่น้ำสูงถึง ~15,000 - 25,000+ บาทต่อปี!",
                 swapItem: "📱 สมาร์ทโฟนรุ่นใหม่ล่าสุด หรือ 🛵 ทริปเที่ยวต่างประเทศ 1 ทริป!",
-                chibiSvg: '<img src="https://i.ibb.co/WpBPyXvk/Gemini-Generated-Image-7t52f7t52f7t52f7-removebg-preview.png" alt="พี่เกรงใจ" class="w-full h-auto max-h-full object-contain transition-transform duration-300 hover:scale-105" />',
-
+                chibiSvg: `<img src="https://i.ibb.co/WpBPyXvk/Gemini-Generated-Image-7t52f7t52f7t52f7-removebg-preview.png" alt="พี่เกรงใจ" class="w-full h-auto max-h-full object-contain transition-transform duration-300 hover:scale-105" />`,
             },
             {
                 id: "neuroticism",
@@ -753,12 +725,9 @@
                 impactText: "สูญเสียเงินละลายแม่น้ำสูงถึง ~20,000 - 40,000+ บาทต่อปี!",
                 swapItem: "💻 แท็บเล็ตรุ่นโปร หรือ 🏥 คอร์สดูแลสุขภาพจิตและกายแบบพรีเมียม!",
                 chibiSvg: `<img src="https://i.ibb.co/4gJNvm98/Gemini-Generated-Image-j7bw02j7bw02j7bw.png" alt="พี่ดิ่งง่าย" class="w-full h-full object-contain transition-transform duration-300 hover:scale-105" />`,
-
-
             }
         ];
 
-        // Global State Variable
         let questionsData = [];
         let charactersData = [];
         let currentQuestionIndex = 0;
@@ -768,7 +737,6 @@
         let editingCharacterId = null;
         let currentResultCharacter = null;
 
-        // Initialize Data on Window Load
         window.onload = function() {
             loadInitialData();
             updateUIState();
@@ -780,12 +748,6 @@
                 const savedC = localStorage.getItem('smoke_quiz_characters');
                 questionsData = savedQ ? JSON.parse(savedQ) : JSON.parse(JSON.stringify(DEFAULT_QUESTIONS));
                 charactersData = savedC ? JSON.parse(savedC) : JSON.parse(JSON.stringify(DEFAULT_CHARACTERS));
-
-                const consChar = charactersData.find(c => c.id === 'conscientiousness');
-                if (consChar && !consChar.chibiSvg.includes('Gemini_Generated_Image_b0cuseb0cuseb0cu.png')) {
-                    consChar.chibiSvg = DEFAULT_CHARACTERS[0].chibiSvg;
-                    localStorage.setItem('smoke_quiz_characters', JSON.stringify(charactersData));
-                }
             } catch (e) {
                 console.warn("Could not load from localStorage, fallback to defaults.", e);
                 questionsData = JSON.parse(JSON.stringify(DEFAULT_QUESTIONS));
@@ -802,9 +764,7 @@
             }
         }
 
-        // Mandatory updateUIState function
         function updateUIState() {
-            // Update question & character count badges
             const qBadge = document.getElementById('q-count-badge');
             const cBadge = document.getElementById('c-count-badge');
             if (qBadge) qBadge.innerText = questionsData.length;
@@ -831,7 +791,6 @@
             }, 2600);
         }
 
-        // Quiz Progression Functions
         function startQuiz() {
             if (questionsData.length === 0) {
                 showToast("ยังไม่มีคำถามในระบบ กรุณาเพิ่มคำถามในแอดมินก่อน", "fa-triangle-exclamation text-amber-400");
@@ -851,7 +810,6 @@
             const q = questionsData[currentQuestionIndex];
             document.getElementById('step-indicator').innerText = `ข้อ ${currentQuestionIndex + 1} / ${questionsData.length}`;
 
-            // Progress bar
             const percent = ((currentQuestionIndex + 1) / questionsData.length) * 100;
             document.getElementById('progress-bar').style.width = `${percent}%`;
 
@@ -919,7 +877,6 @@
             document.getElementById('box-screen').classList.remove('hidden');
             document.getElementById('step-indicator').innerText = "กล่องสุ่มตัวตน";
             
-            // Reset box animation state if played multiple times
             const boxArt = document.getElementById('mystery-box-art');
             if (boxArt) {
                 boxArt.className = "animate-box-shake relative z-10 w-full h-full flex items-center justify-center";
@@ -931,8 +888,6 @@
                 const AudioCtx = window.AudioContext || window.webkitAudioContext;
                 if (!AudioCtx) return;
                 const ctx = new AudioCtx();
-                
-                // Magical twinkle chimes (High frequency arpeggio notes with synth decay)
                 const notes = [1046.50, 1318.51, 1567.98, 1975.53, 2093.00, 2637.02, 3135.96];
                 
                 notes.forEach((freq, idx) => {
@@ -952,24 +907,8 @@
                     osc.start(ctx.currentTime + idx * 0.05);
                     osc.stop(ctx.currentTime + idx * 0.05 + 0.5);
                 });
-
-                // Shimmer glissando layer for extra sparkle
-                setTimeout(() => {
-                    const sparkOsc = ctx.createOscillator();
-                    const sparkGain = ctx.createGain();
-                    sparkOsc.type = 'triangle';
-                    sparkOsc.frequency.setValueAtTime(3520, ctx.currentTime);
-                    sparkOsc.frequency.exponentialRampToValueAtTime(4186, ctx.currentTime + 0.3);
-                    sparkGain.gain.setValueAtTime(0.1, ctx.currentTime);
-                    sparkGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
-                    sparkOsc.connect(sparkGain);
-                    sparkGain.connect(ctx.destination);
-                    sparkOsc.start();
-                    sparkOsc.stop(ctx.currentTime + 0.35);
-                }, 150);
-
             } catch (e) {
-                console.log("Audio playback not allowed or supported:", e);
+                console.log("Audio playback error", e);
             }
         }
 
@@ -979,7 +918,6 @@
                 boxArt.className = "animate-box-burst relative z-10 w-full h-full flex items-center justify-center";
             }
 
-            // Play the sound effect ("วิ้ง~ ✨")
             playTwinkleSound();
 
             setTimeout(() => {
@@ -994,10 +932,8 @@
             document.getElementById('result-screen').classList.remove('hidden');
             document.getElementById('step-indicator').innerText = "ผลลัพธ์";
 
-            // Find matching character based on score range
             let matched = charactersData.find(c => totalUserScore >= c.minScore && totalUserScore <= c.maxScore);
 
-            // Fallback if no exact range match
             if (!matched && charactersData.length > 0) {
                 matched = charactersData[0];
             }
@@ -1017,7 +953,6 @@
             const artWrapper = document.getElementById('chibi-art-wrapper');
             artWrapper.innerHTML = matched ? matched.chibiSvg : '🎨';
 
-            // Trigger animations
             const reveals = document.querySelectorAll('.reveal-item');
             reveals.forEach((el, index) => {
                 el.classList.remove('reveal-in');
@@ -1031,92 +966,122 @@
             startQuiz();
         }
 
-        // IG Story Canvas Renderer & Exporter
-        function shareResult() {
+        // --- ASYNC IMAGE LOADER FOR CANVAS (FIXED IG STORY SHARE ISSUE) ---
+        function loadCharacterImage(characterSvg) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.crossOrigin = "anonymous";
+                
+                let sourceUrl = '';
+                let isBlob = false;
+
+                const trimmed = characterSvg.trim();
+                
+                if (trimmed.startsWith('<svg')) {
+                    const svgBlob = new Blob([trimmed], { type: 'image/svg+xml;charset=utf-8' });
+                    sourceUrl = URL.createObjectURL(svgBlob);
+                    isBlob = true;
+                } else if (trimmed.includes('<img')) {
+                    const match = trimmed.match(/src=["']([^"']+)["']/);
+                    sourceUrl = match ? match[1] : 'https://i.ibb.co/Hfn010KS/Gemini-Generated-Image-b0cuseb0cuseb0cu-removebg-preview.png';
+                } else {
+                    sourceUrl = trimmed;
+                }
+
+                img.onload = () => {
+                    if (isBlob) URL.revokeObjectURL(sourceUrl);
+                    resolve(img);
+                };
+
+                img.onerror = (err) => {
+                    if (isBlob) URL.revokeObjectURL(sourceUrl);
+                    reject(err);
+                };
+
+                img.src = sourceUrl;
+            });
+        }
+
+        async function shareResult() {
             if (!currentResultCharacter) return;
 
-            const canvas = document.getElementById('export-canvas');
-            const ctx = canvas.getContext('2d');
+            const shareBtn = document.getElementById('btn-share-ig');
+            const originalBtnText = shareBtn.innerHTML;
+            shareBtn.disabled = true;
+            shareBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i> กำลังสร้างรูปภาพ...`;
 
-            // Draw IG Story Dimensions: 1080 x 1920
-            // Gradient Background
-            const bgGradient = ctx.createLinearGradient(0, 0, 1080, 1920);
-            bgGradient.addColorStop(0, '#FFF7EE');
-            bgGradient.addColorStop(0.5, '#F1E9FF');
-            bgGradient.addColorStop(1, '#E4F3FF');
-            ctx.fillStyle = bgGradient;
-            ctx.fillRect(0, 0, 1080, 1920);
+            try {
+                const canvas = document.getElementById('export-canvas');
+                const ctx = canvas.getContext('2d');
 
-            // Inner Card Frame
-            ctx.fillStyle = '#FFFFFF';
-            ctx.shadowColor = 'rgba(100, 110, 220, 0.15)';
-            ctx.shadowBlur = 40;
-            ctx.shadowOffsetY = 20;
-            roundRect(ctx, 80, 120, 920, 1680, 60, true, false);
-            ctx.shadowColor = 'transparent';
+                // Canvas Background
+                const bgGradient = ctx.createLinearGradient(0, 0, 1080, 1920);
+                bgGradient.addColorStop(0, '#FFF7EE');
+                bgGradient.addColorStop(0.5, '#F1E9FF');
+                bgGradient.addColorStop(1, '#E4F3FF');
+                ctx.fillStyle = bgGradient;
+                ctx.fillRect(0, 0, 1080, 1920);
 
-            // Top Hashtag Header
-            ctx.fillStyle = '#8C7AE6';
-            ctx.font = 'bold 36px Prompt, sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText('#แลกเพื่อสิ่งที่ใช่ x #ป้องกันนักสูบหน้าใหม่', 540, 220);
+                // Card Box Frame
+                ctx.fillStyle = '#FFFFFF';
+                ctx.shadowColor = 'rgba(100, 110, 220, 0.15)';
+                ctx.shadowBlur = 40;
+                ctx.shadowOffsetY = 20;
+                roundRect(ctx, 80, 120, 920, 1680, 60, true, false);
+                ctx.shadowColor = 'transparent';
 
-            // Title
-            ctx.fillStyle = '#2D3436';
-            ctx.font = 'extrabold 56px Prompt, sans-serif';
-            ctx.fillText(currentResultCharacter.title, 540, 320);
+                // Header
+                ctx.fillStyle = '#8C7AE6';
+                ctx.font = 'bold 36px Prompt, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('#แลกเพื่อสิ่งที่ใช่ x #ป้องกันนักสูบหน้าใหม่', 540, 220);
 
-            // Subtitle Tag
-            ctx.fillStyle = '#F0E6FF';
-            roundRect(ctx, 240, 360, 600, 60, 30, true, false);
-            ctx.fillStyle = '#8C7AE6';
-            ctx.font = 'bold 32px Prompt, sans-serif';
-            ctx.fillText(currentResultCharacter.subtitle, 540, 402);
+                // Title
+                ctx.fillStyle = '#2D3436';
+                ctx.font = 'extrabold 52px Prompt, sans-serif';
+                ctx.fillText(currentResultCharacter.title, 540, 320);
 
-            // Score Badge
-            const maxPts = questionsData.length * 3;
-            ctx.fillStyle = '#6366F1';
-            ctx.font = 'bold 32px Prompt, sans-serif';
-            ctx.fillText(`คะแนนของคุณ: ${totalUserScore} / ${maxPts} คะแนน`, 540, 490);
+                // Subtitle
+                ctx.fillStyle = '#F0E6FF';
+                roundRect(ctx, 240, 360, 600, 60, 30, true, false);
+                ctx.fillStyle = '#8C7AE6';
+                ctx.font = 'bold 28px Prompt, sans-serif';
+                ctx.fillText(currentResultCharacter.subtitle, 540, 402);
 
-            // Character Frame Circle
-            ctx.save();
-            ctx.beginPath();
-            ctx.arc(540, 800, 220, 0, Math.PI * 2);
-            ctx.fillStyle = '#F8F5FF';
-            ctx.fill();
-            ctx.lineWidth = 12;
-            ctx.strokeStyle = '#FFD9A0';
-            ctx.stroke();
-            ctx.restore();
+                // Score Badge
+                const maxPts = questionsData.length * 3;
+                ctx.fillStyle = '#6366F1';
+                ctx.font = 'bold 32px Prompt, sans-serif';
+                ctx.fillText(`คะแนนของคุณ: ${totalUserScore} / ${maxPts} คะแนน`, 540, 490);
 
-            // Convert SVG Chibi or Image tag to Image for Canvas
-            const svgString = currentResultCharacter.chibiSvg;
-            const img = new Image();
-            let url;
-            let isBlob = false;
+                // Character Circle Backdrop
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(540, 780, 210, 0, Math.PI * 2);
+                ctx.fillStyle = '#F8F5FF';
+                ctx.fill();
+                ctx.lineWidth = 12;
+                ctx.strokeStyle = '#FFD9A0';
+                ctx.stroke();
+                ctx.restore();
 
-            if (svgString.trim().startsWith('<svg')) {
-                const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
-                url = URL.createObjectURL(svgBlob);
-                isBlob = true;
-            } else {
-                const srcMatch = svgString.match(/src=["']([^"']+)["']/);
-                url = srcMatch ? srcMatch[1] : 'Gemini_Generated_Image_b0cuseb0cuseb0cu.png';
-            }
-
-            img.crossOrigin = "anonymous";
-            img.onload = function() {
-                ctx.drawImage(img, 360, 620, 360, 360);
-                if (isBlob) URL.revokeObjectURL(url);
+                // ASYNC IMAGE DRAWING
+                const charImage = await loadCharacterImage(currentResultCharacter.chibiSvg);
+                
+                // Draw Image centered inside circle frame
+                const drawSize = 380;
+                ctx.drawImage(charImage, 540 - (drawSize / 2), 780 - (drawSize / 2), drawSize, drawSize);
 
                 // Description Box
                 ctx.fillStyle = '#FAFAFA';
-                roundRect(ctx, 140, 1080, 800, 260, 40, true, false);
+                roundRect(ctx, 140, 1060, 800, 280, 40, true, false);
 
                 ctx.fillStyle = '#4B5563';
-                ctx.font = '28px Prompt, sans-serif';
-                wrapText(ctx, currentResultCharacter.desc, 540, 1140, 740, 42);
+                ctx.font = '26px Prompt, sans-serif';
+                
+                // Format description text cleanly without raw markdown tags
+                const cleanDesc = currentResultCharacter.desc.replace(/\\n/g, ' ').replace(/\n/g, ' ');
+                wrapText(ctx, cleanDesc, 540, 1120, 720, 38);
 
                 // Swap Highlight Box
                 ctx.fillStyle = '#FFDD59';
@@ -1135,7 +1100,7 @@
                 ctx.font = '26px Prompt, sans-serif';
                 ctx.fillText('สแกนตัวตนได้ที่: Smoke Type Quiz', 540, 1720);
 
-                // Trigger Download
+                // Export PNG Data
                 const dataURL = canvas.toDataURL('image/png');
                 const link = document.createElement('a');
                 link.download = `smoke-type-quiz-${currentResultCharacter.id}.png`;
@@ -1143,11 +1108,15 @@
                 link.click();
 
                 showToast("บันทึกรูปภาพสำเร็จ! พร้อมแชร์ลง IG Story", "fa-instagram text-pink-400");
-            };
-            img.src = url;
+            } catch (error) {
+                console.error("Canvas Export Error:", error);
+                showToast("เกิดข้อผิดพลาดในการโหลดภาพ กรุณาลองใหม่อีกครั้ง", "fa-circle-xmark text-rose-400");
+            } finally {
+                shareBtn.disabled = false;
+                shareBtn.innerHTML = originalBtnText;
+            }
         }
 
-        // Canvas Helper Functions
         function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
             ctx.beginPath();
             ctx.moveTo(x + radius, y);
@@ -1193,7 +1162,6 @@
             const buildingScreen = document.getElementById('building-screen');
 
             if (adminScreen.classList.contains('hidden')) {
-                // Show Admin
                 startScreen.classList.add('hidden');
                 quizScreen.classList.add('hidden');
                 resultScreen.classList.add('hidden');
@@ -1202,7 +1170,6 @@
                 document.getElementById('step-indicator').innerText = "ระบบแอดมิน";
                 updateUIState();
             } else {
-                // Close Admin back to Start
                 adminScreen.classList.add('hidden');
                 startScreen.classList.remove('hidden');
                 document.getElementById('step-indicator').innerText = "หน้าแรก";
@@ -1276,7 +1243,7 @@
                 const item = document.createElement('div');
                 item.className = "p-3 bg-white border border-gray-100 rounded-2xl shadow-sm flex items-center justify-between gap-2 text-xs";
                 item.innerHTML = `
-                    <div class="w-10 h-10 shrink-0 rounded-full bg-purple-50 flex items-center justify-center p-1">
+                    <div class="w-10 h-10 shrink-0 rounded-full bg-purple-50 flex items-center justify-center p-1 overflow-hidden">
                         ${c.chibiSvg}
                     </div>
                     <div class="flex-1 overflow-hidden pr-1">
@@ -1296,7 +1263,6 @@
             });
         }
 
-        // QUESTION MODAL HANDLERS
         function openQuestionModal(index) {
             editingQuestionIndex = index;
             const modal = document.getElementById('question-modal');
@@ -1361,7 +1327,6 @@
             }
         }
 
-        // CHARACTER MODAL HANDLERS
         function openCharacterModal(id) {
             editingCharacterId = id;
             const modal = document.getElementById('character-modal');
@@ -1444,7 +1409,6 @@
             }
         }
 
-        // EXPORT / IMPORT BACKUP JSON
         function exportQuizData() {
             const backupObj = {
                 version: "1.0",
