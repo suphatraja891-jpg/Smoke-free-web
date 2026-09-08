@@ -744,8 +744,8 @@
 
         function loadInitialData() {
             try {
-                const savedQ = localStorage.getItem('smoke_quiz_questions');
-                const savedC = localStorage.getItem('smoke_quiz_characters');
+                const savedQ = localStorage.getItem('smoke_quiz_v2_questions');
+                const savedC = localStorage.getItem('smoke_quiz_v2_characters');
                 questionsData = savedQ ? JSON.parse(savedQ) : JSON.parse(JSON.stringify(DEFAULT_QUESTIONS));
                 charactersData = savedC ? JSON.parse(savedC) : JSON.parse(JSON.stringify(DEFAULT_CHARACTERS));
             } catch (e) {
@@ -757,8 +757,8 @@
 
         function saveToLocalStorage() {
             try {
-                localStorage.setItem('smoke_quiz_questions', JSON.stringify(questionsData));
-                localStorage.setItem('smoke_quiz_characters', JSON.stringify(charactersData));
+                localStorage.setItem('smoke_quiz_v2_questions', JSON.stringify(questionsData));
+                localStorage.setItem('smoke_quiz_v2_characters', JSON.stringify(charactersData));
             } catch (e) {
                 console.warn("Could not save to localStorage", e);
             }
